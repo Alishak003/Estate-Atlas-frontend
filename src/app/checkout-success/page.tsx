@@ -44,7 +44,7 @@ export default async function CheckoutSuccess() {
           clearTimeout(timer);
     }
 
-  },[count,router])
+  },[count,router,session_id])
 
 
   return (
@@ -57,12 +57,6 @@ export default async function CheckoutSuccess() {
         <p>
           redirecting in {count}...
         </p>
-        {/* <a
-          href="/"
-          className="inline-block px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-        >
-          Go to Dashboard
-        </a> */}
       </div>
     </div>
   );

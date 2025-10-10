@@ -36,10 +36,9 @@ export default function AffiliatePage() {
           },
         })
         const data = await res.json()
-        console.log("data -> ",data);
         if (res.ok && data.success) {
           setAffiliateInfo(data);
-          var affiliate_code = `${process.env.NEXT_PUBLIC_API_URL}/affiliate/click/${data.affiliate_code}`;
+          const affiliate_code = `${process.env.NEXT_PUBLIC_API_URL}/affiliate/click/${data.affiliate_code}`;
           setAffiliateLink(affiliate_code);
         }
       } catch (err) {

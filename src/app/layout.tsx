@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import {  Poppins } from "next/font/google";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Script from "next/script";
@@ -8,7 +7,6 @@ import StripeProvider from "./StripeProvider";
 import { Toaster } from 'react-hot-toast';
 import ChatWidget from "@/components/ChatbotWidget/ChatWidget";
 
-const inter = Inter({ subsets: ["latin"] });
 
 
 const poppins = Poppins({

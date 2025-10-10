@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter,useSearchParams } from "next/navigation";
+import { useRouter} from "next/navigation";
 import { useEffect, useState } from "react";
 
 
@@ -30,6 +30,7 @@ export default function CheckoutCancel() {
         <p className="text-gray-700 mb-6">
           Your payment was not completed. You can try again later or contact support.
         </p>
+        
         <a
           href="/"
           className="inline-block px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"

@@ -2,8 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useStripe, useElements } from '@stripe/react-stripe-js';
 import logo from '../../../../public/logo.png';
 import { useUser } from '@/app/context/UserContext';
 import Cookies from 'js-cookie';
@@ -14,7 +13,6 @@ export default function RegisterForm() {
   const [plan, setPlan] = useState('premium');
   const [isYearly, setIsYearly] = useState(false);
   const { setUser } = useUser();
-  const router = useRouter();
 
   // Initialize price IDs
   //price_1RdSQsDgYV6zJ17v5Qn2763Z
@@ -52,9 +50,6 @@ export default function RegisterForm() {
 
   // Update price_id when plan or yearly changes
   useEffect(() => {
-
-     const params = new URLSearchParams(window.location.search);
-  // const referral = params.get('ref') || localStorage.getItem('affiliate_code') || '';
     setFormData(prev => ({
       ...prev,
       price_id: selectedPriceId,
