@@ -1,19 +1,13 @@
 'use client';
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter} from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function CheckoutSuccess() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [count, setCount] = useState(5);
-  const session_id = searchParams.get('session_id');
 
   useEffect(() => {
-    if (!session_id) {
-      router.replace('/');
-      return;
-    }
 
     if (count === 1) {
       router.replace('/dashboard/Countries');
@@ -25,7 +19,7 @@ export default function CheckoutSuccess() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [count, router, session_id]);
+  }, [count, router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-green-50 px-4">
