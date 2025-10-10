@@ -35,7 +35,7 @@ export const PricingCard = ({
  const router = useRouter();
 const handleClick = () => {
   // const referral = localStorage.getItem("affiliate_code");
-  let url = `subscribe?plan=${plan}&isYearly=${isYearly}`;
+  const url = `subscribe?plan=${plan}&isYearly=${isYearly}`;
   // if (referral) url += `&ref=${referral}`;
   router.push(url);
   };

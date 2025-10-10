@@ -2,15 +2,19 @@
 
 import { useRouter} from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from 'next/link';
+
 
 
 export default function CheckoutCancel() {
     const [count,setCount] = useState(5);
     const router = useRouter();
 
-     useEffect(()=>{
+    useEffect(()=>{
 
-    count===0 &&   router.replace('/')
+    if (count===0 || count ===1){
+      router.replace('/');
+    }
 
     const timer = setTimeout(()=>{
         setCount((prevCount)=>prevCount-1);
@@ -31,12 +35,11 @@ export default function CheckoutCancel() {
           Your payment was not completed. You can try again later or contact support.
         </p>
         
-        <a
-          href="/"
-          className="inline-block px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
-        >
+        <Link href="/" className="inline-block px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
           Return Home
-        </a>
+        </Link>
+
+
       </div>
     </div>
   );
