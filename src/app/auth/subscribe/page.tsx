@@ -124,7 +124,7 @@ export default function RegisterForm() {
           body: JSON.stringify({
             price_id:formData.price_id,
             is_yearly: isYearly,
-            userData : userData
+            user_data : userData
           })
         }); 
 
