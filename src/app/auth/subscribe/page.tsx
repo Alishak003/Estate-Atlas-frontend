@@ -12,7 +12,7 @@ export default function RegisterForm() {
   const elements = useElements();
   const [plan, setPlan] = useState('premium');
   const [isYearly, setIsYearly] = useState(false);
-  const { user,setUser } = useUser();
+  const { setUser } = useUser();
 
   // Initialize price IDs
   //price_1RdSQsDgYV6zJ17v5Qn2763Z
@@ -114,7 +114,7 @@ export default function RegisterForm() {
         Cookies.set('user', JSON.stringify(data.user), { expires: 7, path: '/' });
         
         setUser(data.user);
-        var userData = JSON.stringify(data.user);
+        var userData = data.user;
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`,{
           method: 'POST',
           headers:{
