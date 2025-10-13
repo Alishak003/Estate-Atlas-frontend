@@ -114,7 +114,7 @@ export default function RegisterForm() {
         Cookies.set('user', JSON.stringify(data.user), { expires: 7, path: '/' });
         
         setUser(data.user);
-        var userData = data.user;
+        const userData = data.user;
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`,{
           method: 'POST',
           headers:{
