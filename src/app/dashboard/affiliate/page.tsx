@@ -66,10 +66,7 @@ export default function AffiliatePage() {
       })
       const data = await res.json()
       if (res.ok && data) {
-        
-        setAffiliateLink(data.data.affiliate_link)
-      
-        
+        setAffiliateLink(data.data.affiliate_link)        
          toast.success('Affiliate code fetched successfully!')
       } else {
        toast.error('Failed to fetch affiliate code')

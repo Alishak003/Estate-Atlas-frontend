@@ -6,6 +6,7 @@ import { useStripe, useElements } from '@stripe/react-stripe-js';
 import logo from '../../../../public/logo.png';
 import { useUser } from '@/app/context/UserContext';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
   const stripe = useStripe();
@@ -14,6 +15,7 @@ export default function RegisterForm() {
   const [isYearly, setIsYearly] = useState(false);
   const { setUser } = useUser();
 
+  const router = useRouter();
   // Initialize price IDs
   //price_1RdSQsDgYV6zJ17v5Qn2763Z
   const PRICES: Record<string, { monthly: string; yearly: string }> = {
@@ -115,6 +117,7 @@ export default function RegisterForm() {
         
         setUser(data.user);
         const userData = data.user;
+        try{
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`,{
           method: 'POST',
           headers:{
@@ -129,14 +132,18 @@ export default function RegisterForm() {
         }); 
 
         const checkoutData = await response.json();
-        console.log(checkoutData);
-        if (checkoutData.url) {
+        if (response.ok && checkoutData.url) {
           window.location.href = checkoutData.url;
         }
         else{
-          setError(checkoutData.message);
-        }
-        
+          setError(checkoutData .message || "Checkout session creation failed. Kindly login to try again");
+        } 
+      }catch(checkoutError){
+        console.error('Checkout error:', checkoutError);
+        // Show error to user
+        setError("Checkout could not be initiated. Please login to try again later.");
+        router.push('/auth/login');
+        } 
       }
     } catch (err) {
       console.error('Registration error:', err);
