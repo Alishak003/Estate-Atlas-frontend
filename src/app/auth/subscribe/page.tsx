@@ -14,6 +14,7 @@ export default function RegisterForm() {
   const [plan, setPlan] = useState('premium');
   const [isYearly, setIsYearly] = useState(false);
   const { setUser } = useUser();
+  const [affiliate,setAffiliate] = useState("");
 
   const router = useRouter();
   // Initialize price IDs
@@ -31,6 +32,10 @@ export default function RegisterForm() {
 
   // Get URL params on client side
   useEffect(() => {
+    const referral = localStorage.getItem('affiliate_code');
+    if(referral){
+    setAffiliate(referral);
+    }
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setPlan(params.get('plan') || 'premium');
@@ -55,9 +60,9 @@ export default function RegisterForm() {
     setFormData(prev => ({
       ...prev,
       price_id: selectedPriceId,
-      // affiliate_code: referral,
+      affiliate_code: affiliate
     }));
-  }, [selectedPriceId]);
+  }, [selectedPriceId,affiliate]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
