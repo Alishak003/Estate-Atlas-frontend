@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import PhoneInput from "react-phone-input-2";
+// import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css';
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -12,7 +12,7 @@ const ContactForm: React.FC = () => {
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
+    // phone: "",
     message: "",
   });
 
@@ -33,9 +33,9 @@ const ContactForm: React.FC = () => {
     }));
   };
 
-  const handlePhoneChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, phone: value }));
-  };
+  // const handlePhoneChange = (value: string) => {
+  //   setFormData((prev) => ({ ...prev, phone: value }));
+  // };
 
   const handleCaptchaChange = (value: string | null) => {
     setCaptchaValue(value);
@@ -59,7 +59,7 @@ const ContactForm: React.FC = () => {
        first_name: formData.firstName,
        last_name:formData.lastName,
         email: formData.email,
-        phone: formData.phone,
+        // phone: formData.phone,
         message: formData.message,
         'g-recaptcha-response': captchaValue,
       };
@@ -82,7 +82,7 @@ const ContactForm: React.FC = () => {
           firstName: "",
           lastName: "",
           email: "",
-          phone: "",
+          // phone: "",
           message: "",
         });
         recaptchaRef.current?.reset();
@@ -160,7 +160,7 @@ const ContactForm: React.FC = () => {
         </div>
 
         {/* Phone */}
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Phone
           </label>
@@ -177,7 +177,7 @@ const ContactForm: React.FC = () => {
               autoFocus: false
             }}
           />
-        </div>
+        </div> */}
 
         {/* Message */}
         <div className="relative mt-4">
