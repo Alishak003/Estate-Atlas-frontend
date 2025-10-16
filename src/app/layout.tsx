@@ -5,7 +5,6 @@ import { Providers } from "./providers";
 import Script from "next/script";
 import StripeProvider from "./StripeProvider";
 import { Toaster } from 'react-hot-toast';
-import ChatWidget from "@/components/ChatbotWidget/ChatWidget";
 
 
 
