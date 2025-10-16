@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { ChevronUp, Facebook, Instagram, Twitter } from "lucide-react";
+import { ChevronUp, Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
 import logo from "../../public/logo.png";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -91,6 +91,12 @@ const Footer = () => {
           </a>
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
             <Instagram />
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+            <Linkedin />
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+            <Youtube />
           </a>
         </div>
       </div>

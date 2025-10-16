@@ -11,14 +11,14 @@ import React, { useEffect, useState } from 'react';
 const Page = () => {
   const [isYearly, setIsYearly] = useState(false);
   useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const referral = params.get('code');
+    const params = new URLSearchParams(window.location.search);
+    const referral = params.get('code');
 
-  console.log('referral', referral);
-  if (referral) {
-    localStorage.setItem('affiliate_code', referral);
-  }
-}, []);
+    console.log('referral', referral);
+    if (referral) {
+      localStorage.setItem('affiliate_code', referral);
+    }
+  }, []);
 
   return (
    <div>

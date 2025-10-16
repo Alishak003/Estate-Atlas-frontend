@@ -14,7 +14,7 @@ const Contact = () => {
           Reach Out <span className="text-[#3BA1DF]">–</span> To Our <br /> Real Estate Experts
         </h1>
         <p className="mt-5 text-l md:text-l text-center text-[#80838A]">
-           Have specific market questions, data insights or looking for a custom international data solution? <br/>Our expert team is ready to assist you with any questions you may have
+           Have specific market questions, data insights or looking for a custom international data solution? <br/>Our expert team is ready to assist you with any questions you may have.
         </p>
       </div>
       <div

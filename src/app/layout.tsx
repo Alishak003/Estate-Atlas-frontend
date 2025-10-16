@@ -57,7 +57,6 @@ export default function RootLayout({
             {children}
           </main>
           <Toaster position="top-right" reverseOrder={false} /> 
-          <ChatWidget/>
           </StripeProvider>
 
         </Providers>
