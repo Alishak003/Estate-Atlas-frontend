@@ -34,7 +34,7 @@ export default function Billing() {
 
   // Update options state
   const [showUpdateOptions, setShowUpdateOptions] = useState(false);
-  const [selectedPriceId, setSelectedPriceId] = useState("basic_monthly");
+  const [selectedPriceSlug, setSelectedPriceSlug] = useState("basic_monthly");
   const [updating, setUpdating] = useState(false);
 
   // update card
@@ -173,7 +173,7 @@ export default function Billing() {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ price_id: selectedPriceId }),
+          body: JSON.stringify({ price_slug: selectedPriceSlug }),
         }
       );
 
@@ -181,7 +181,7 @@ export default function Billing() {
       if (!res.ok) {
        toast.error("Failed to update subscription: " + data?.message);
       } else {
-       toast.success("Subscription updated to " + selectedPriceId);
+       toast.success("Subscription updated to " + selectedPriceSlug);
         setShowUpdateOptions(false);
       }
     } catch (err) {
@@ -343,8 +343,8 @@ export default function Billing() {
                 Select New Plan:
               </label>
               <select
-                value={selectedPriceId}
-                onChange={(e) => setSelectedPriceId(e.target.value)}
+                value={selectedPriceSlug}
+                onChange={(e) => setSelectedPriceSlug(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mb-4"
               >
                 <option value="basic_monthly">Basic Monthly</option>

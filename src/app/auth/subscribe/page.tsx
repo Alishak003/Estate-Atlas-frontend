@@ -17,16 +17,14 @@ export default function RegisterForm() {
   const [affiliate,setAffiliate] = useState("");
 
   const router = useRouter();
-  // Initialize price IDs
-  //price_1RdSQsDgYV6zJ17v5Qn2763Z
-  const PRICES: Record<string, { monthly: string; yearly: string }> = {
+  const PRICES_SLUG: Record<string, { monthly: string; yearly: string }> = {
     basic: {
-      monthly: 'price_1SDMAnRzsDq04jEjj80UfhHp',
-      yearly: 'price_1SEFYYRzsDq04jEjcSQhnJW9',
+      monthly: 'basic_monthly',
+      yearly: 'basic_yearly',
     },
     premium: {
-      monthly: 'price_1SDMFKRzsDq04jEjkQZpu3kG',
-      yearly: 'price_1SDMGVRzsDq04jEjF198a1uJ',
+      monthly: 'premium_monthly',
+      yearly: 'premium_yearly',
     },
   };
 
@@ -43,7 +41,7 @@ export default function RegisterForm() {
     }
   }, []);
 
-  const selectedPriceId = PRICES[plan]?.[isYearly ? 'yearly' : 'monthly'] || '';
+  const selectedPriceSlug = PRICES_SLUG[plan]?.[isYearly ? 'yearly' : 'monthly'] || '';
 
   const [formData, setFormData] = useState({
     first_name: '',
@@ -51,7 +49,7 @@ export default function RegisterForm() {
     email: '',
     password: '',
     confirm_password: '',
-    price_id: selectedPriceId,
+    price_slug: selectedPriceSlug, 
     affiliate_code: '',
   });
 
@@ -59,10 +57,10 @@ export default function RegisterForm() {
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
-      price_id: selectedPriceId,
-      affiliate_code: affiliate
+      affiliate_code: affiliate,
+      price_slug: selectedPriceSlug
     }));
-  }, [selectedPriceId,affiliate]);
+  }, [affiliate,selectedPriceSlug]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -97,7 +95,7 @@ export default function RegisterForm() {
         email: formData.email,
         password: formData.password,
         password_confirmation: formData.confirm_password,
-        price_id: formData.price_id,
+        price_slug:formData.price_slug,
         affiliate_code: formData.affiliate_code,
         is_yearly: isYearly,
       };
@@ -130,7 +128,7 @@ export default function RegisterForm() {
             Accept: 'application/json',
           },
           body: JSON.stringify({
-            price_id:formData.price_id,
+            price_slug:formData.price_slug,
             is_yearly: isYearly,
             user_data : userData
           })

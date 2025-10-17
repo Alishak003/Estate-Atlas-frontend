@@ -38,22 +38,50 @@ export default function LoginForm() {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         setError(data.message || "Login failed");
       } else {
-  
-
-      
-
         Cookies.set("token", data.data.token, { expires: 7, path: "/" });
         Cookies.set("user", JSON.stringify(data.data.user), {
           expires: 7,
           path: "/",
         });
+      
+      if(data.data.user.status === "pending"){
+        const userData = data.data.user;
+        try {
+          const price_slug = userData.pending_plan_slug;
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`,{
+            method: 'POST',
+            headers:{
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: JSON.stringify({
+              price_slug:price_slug,
+              user_data : userData
+            })
+          }); 
 
-        setUser(data.data.user);
+          const checkoutData = await response.json();
+          if (response.ok && checkoutData.url) {
+            window.location.href = checkoutData.url;
+          }
+          else{
+            setError(checkoutData .message || "Checkout session creation failed. Kindly login to try again");
+          } 
+        } catch (error) {
+          console.error('Checkout error:', error);
+          // Show error to user
+          setError("Checkout could not be initiated. Please login to try again later.");
+          router.push('/auth/login');
+        }
+      }
+      else{
+        const userData = data.data.user;
+        setUser(userData);
         router.push("/dashboard/Countries");
+      }
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
