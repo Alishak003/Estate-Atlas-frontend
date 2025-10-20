@@ -72,7 +72,7 @@ export default function Header() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuItem className="cursor-pointer" onClick={()=>{router.push('accountSettings')}}>My Account</DropdownMenuItem>
             <DropdownMenuSeparator />
             
             <DropdownMenuSeparator />

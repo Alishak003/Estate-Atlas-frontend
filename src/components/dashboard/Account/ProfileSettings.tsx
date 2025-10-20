@@ -187,7 +187,7 @@ export default function ProfileSettings() {
               onClick={handleCancel}
               variant="outline"
               disabled={!hasChanges}
-              className="bg-sky-500 hover:bg-sky-500 text-white border-sky-500 hover:border-sky-500 px-6 py-2.5 h-auto font-medium"
+              className="bg-sky-500 hover:bg-sky-600 text-white border-sky-500 hover:border-sky-600 px-6 py-2.5 h-auto font-medium"
             >
               Cancel
             </Button>

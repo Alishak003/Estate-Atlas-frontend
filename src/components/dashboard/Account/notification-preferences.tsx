@@ -21,10 +21,10 @@ export default function Notification() {
 
   return (
     <div className=" w-full max-w-5xl px-10 rounded-lg shadow-lg border-0 border-t-4 border-blue-400 mx-auto p-6 bg-white">
-      <div className=" rounded-lg p-4 border border-blue-200">
+      <div className=" rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           <AlertTriangle className="w-5 h-5 text-orange-500" />
-          <h2 className="text-lg font-semibold text-gray-900">Notification Preferences</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Notification Preferences</h2>
         </div>
 
         <div className="space-y-4">

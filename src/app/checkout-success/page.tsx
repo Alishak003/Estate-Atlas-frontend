@@ -2,10 +2,46 @@
 
 import { useRouter} from "next/navigation";
 import { useEffect, useState } from "react";
+import { useUser } from "../context/UserContext";
+import Cookies from 'js-cookie';
 
 export default function CheckoutSuccess() {
   const router = useRouter();
   const [count, setCount] = useState(5);
+  const {user,setUser} = useUser();
+
+  useEffect(() => {
+
+      if ( user && user.id) {
+          const refreshUserData = async () => {
+              const token = Cookies.get('token');
+              // Call a secure API endpoint that fetches the user data from the DB
+              // (The DB status would have been updated by the Stripe webhook)
+              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+                  method: 'GET', // Or POST if you prefer
+                  headers: {
+                      'Authorization': `Bearer ${token}`
+                  }
+              });
+
+              if (response.ok) {
+                  const refreshedData = await response.json();
+                  
+                  // 3. Update the user state and the cookie with the new data
+                  setUser(refreshedData.user);
+                  Cookies.set('user', JSON.stringify(refreshedData.user), { expires: 7, path: '/' });
+                  
+                  // OPTIONAL: Clean up the URL so the refresh doesn't happen again
+                  history.replaceState(null, '', window.location.pathname);
+                  
+              } else {
+                  console.error("Failed to refresh user data after checkout.");
+              }
+          };
+
+          refreshUserData();
+      }
+  }, [user, setUser]); // Depends on the user state and the setter
 
   useEffect(() => {
 
@@ -19,7 +55,7 @@ export default function CheckoutSuccess() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [count, router]);
+  }, [count]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-green-50 px-4">
