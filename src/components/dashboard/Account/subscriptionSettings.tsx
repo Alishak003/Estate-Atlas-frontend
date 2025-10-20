@@ -9,27 +9,31 @@ import { useUser } from "@/app/context/UserContext"
 import Cookies from 'js-cookie';
 import { Circle } from 'lucide-react';
 
-// interface PlanData {
-//     id:string;
-//     name:string;
-//     price:string;
-//     status:string;
-//     renewalDate:string
-// }
+interface PlanData {
+    id:string;
+    name:string;
+    price:string;
+    status:string;
+    renewalDate:string
+}
 export default function SubscriptionSettings(){
     const {user} = useUser();
-    // const [plan,setPlan] = useState<Omit<PlanData, 'id'>>({
-    //     name:"",
-    //     price:"",
-    //     status:"",
-    //     renewalDate:""
-    // })
+    const [plan,setPlan] = useState<Omit<PlanData, 'id'>>({
+        name:"",
+        price:"",
+        status:"",
+        renewalDate:""
+    })
 
+    const [errors, setErrors] = useState<string[]>([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
     useEffect(()=>{
         if(!user || !user.id){
             return;
         }
         const fetchPlan = async ()=>{
+            setIsLoading(true);
             console.log(user);
             const token = Cookies.get('token');
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/plan`,{
@@ -43,12 +47,23 @@ export default function SubscriptionSettings(){
 
             if(!res.ok){
                 console.log("error");
+                setErrors(["error fetching current plan data."]);
+                setSuccess(false);
             }else{
                 console.log(data);
+                setPlan(data);
+                setSuccess(true);
             }
+            setIsLoading(false);
         }
         fetchPlan();
+
     },[user])
+
+    useEffect(()=>{
+        console.log(plan.name);
+    },[plan])
+
 
     const handleCancel= ()=>{
 
