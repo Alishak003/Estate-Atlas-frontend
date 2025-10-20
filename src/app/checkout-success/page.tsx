@@ -55,7 +55,7 @@ export default function CheckoutSuccess() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [count]);
+  }, [count,router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-green-50 px-4">

@@ -9,22 +9,21 @@ import { useUser } from "@/app/context/UserContext"
 import Cookies from 'js-cookie';
 import { Circle } from 'lucide-react';
 
-interface PlanData {
-    id:string;
-    name:string;
-    price:string;
-    status:string;
-    renewalDate:string
-}
+// interface PlanData {
+//     id:string;
+//     name:string;
+//     price:string;
+//     status:string;
+//     renewalDate:string
+// }
 export default function SubscriptionSettings(){
     const {user} = useUser();
-    const [plan,setPlan] = useState<Omit<PlanData, 'id'>>({
-        name:"",
-        price:"",
-        status:"",
-        renewalDate:""
-    })
-    const [error,setError]= useState("");
+    // const [plan,setPlan] = useState<Omit<PlanData, 'id'>>({
+    //     name:"",
+    //     price:"",
+    //     status:"",
+    //     renewalDate:""
+    // })
 
     useEffect(()=>{
         if(!user || !user.id){
@@ -44,18 +43,12 @@ export default function SubscriptionSettings(){
 
             if(!res.ok){
                 console.log("error");
-                setError ("error fetching current plan data.");
             }else{
                 console.log(data);
-                setPlan(data);
             }
         }
         fetchPlan();
     },[user])
-
-    const [errors, setErrors] = useState<string[]>([])
-    const [isLoading, setIsLoading] = useState(false)
-    const [success, setSuccess] = useState(false)
 
     const handleCancel= ()=>{
 
