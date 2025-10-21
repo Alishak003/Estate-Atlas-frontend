@@ -14,7 +14,8 @@ interface PlanData {
     name:string;
     price:string;
     status:string;
-    renewalDate:string
+    renewalDate:string;
+    duration:string
 }
 export default function SubscriptionSettings(){
     const {user} = useUser();
@@ -22,7 +23,8 @@ export default function SubscriptionSettings(){
         name:"",
         price:"",
         status:"",
-        renewalDate:""
+        renewalDate:"",
+        duration:""
     })
 
     const [errors, setErrors] = useState<string[]>([])
@@ -50,9 +52,15 @@ export default function SubscriptionSettings(){
                 setErrors(["error fetching current plan data."]);
                 setSuccess(false);
             }else{
-                console.log(data);
-                setPlan(data);
-                setSuccess(true);
+                console.log(data.data);
+                const {name,price,renewalDate,status,duration} = data.data;
+                setPlan({
+                    name:name ?? "",
+                    status:status ?? "",
+                    price: String(price) ?? "",
+                    renewalDate: renewalDate?? "",
+                    duration:duration??""
+                });
             }
             setIsLoading(false);
         }
@@ -61,7 +69,7 @@ export default function SubscriptionSettings(){
     },[user])
 
     useEffect(()=>{
-        console.log(plan.name);
+        console.log(plan);
     },[plan])
 
 
@@ -87,16 +95,16 @@ export default function SubscriptionSettings(){
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
                                 <p className="text-gray-500 text-sm">
-                                Basic Monthly Plan
+                                {plan.name}
                                 </p>
-                                <button className="text-xs px-3 flex items-center py-1 rounded-full border bg-green-200 text-green-800 font-semibold border-green-500"> 
-                                    <Circle size={8} color="green" fill="green" />
-                                    <span className="ps-1">Active</span>
+                                <button className={`text-xs px-3 flex items-center py-1 rounded-full border font-semibold ${plan.status === 'active' ? 'bg-green-200 text-green-800 border-green-500':'bg-red-200 text-red-800 border-red-500'}`}> 
+                                    {plan.status === 'active'?<Circle size={8} color="green" fill="green" /> : <Circle size={8} color="red" fill="red" />}
+                                    <span className="ps-1">{plan.status}</span>
                                 </button>
                                 </div>
 
                                 <h2 className="text-gray-700 font-semibold text-xl">
-                                    $29/Month
+                                    ${plan.price}/{plan.duration == "monthly" ? 'Month' : 'Year'}
                                 </h2>
                             </div>
                            
@@ -107,7 +115,7 @@ export default function SubscriptionSettings(){
                                 Renewal date
                                 </p>
                                 <h1 className="text-gray-700 font-semibold text-xl">
-                                    Oct 26, 2025
+                                    {plan.renewalDate}
                                 </h1>
                                 
                             </div>

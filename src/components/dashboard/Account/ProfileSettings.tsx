@@ -76,7 +76,7 @@ export default function ProfileSettings() {
         ...successData.data,
       }
 
-      setUser(updatedData)
+      // setUser(updatedData);
       setOriginalData({
         first_name: updatedData.first_name,
         last_name: updatedData.last_name,
