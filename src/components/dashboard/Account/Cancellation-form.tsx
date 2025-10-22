@@ -48,10 +48,10 @@ export default function CancellationReasonModal({handleBack}: ChildComponentProp
     <Card className="w-full md:max-w-3xl bg-white shadow-lg border-t-4 border-blue-500">
       <CardContent className="py-10 px-6 md:px-10 text-center">
         <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-          We're sorry to see you go!
+          We&apos;re sorry to see you go!
         </h2>
         <p className="text-gray-600 mb-6">
-          Could you tell us why you're cancelling? This helps us improve.
+          Could you tell us why you&apos;re cancelling? This helps us improve.
         </p>
 
         <form onSubmit={handleSubmitReason} className="space-y-6 text-left">
