@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useUser } from "@/app/context/UserContext"
 import Cookies from 'js-cookie';
-import { Circle, Route } from 'lucide-react';
+import { Circle } from 'lucide-react';
 import { useRouter } from "next/navigation"
 
 interface PlanData {

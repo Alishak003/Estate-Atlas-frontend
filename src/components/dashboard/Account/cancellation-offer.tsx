@@ -6,9 +6,10 @@ import { useState } from "react";
 // components/CancellationOffer.js (Example)
 interface ChildComponentProps {
     onClose: ()=>void;
+    handleBack: ()=>void;
     selectedReason: string;
 }
-const CancellationOffer = ({ onClose, selectedReason} : ChildComponentProps) => {
+const CancellationOffer = ({ onClose, handleBack, selectedReason} : ChildComponentProps) => {
   const [isCancelling, setIsCancelling] = useState(false);
   
   // Dynamic Offer based on reason
@@ -52,6 +53,11 @@ const CancellationOffer = ({ onClose, selectedReason} : ChildComponentProps) => 
         <p className="text-gray-700 mb-6">{offer.text}</p>
 
         <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto justify-center">
+          <button onClick={handleBack}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition"
+          >
+            Back
+          </button>
           <button
             onClick={handleAcceptOffer}
             className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-md transition"

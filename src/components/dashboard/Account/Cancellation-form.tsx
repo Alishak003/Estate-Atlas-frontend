@@ -15,10 +15,11 @@ const reasons = [
 ];
 
 interface ChildComponentProps {
-    handleNext: ()=>void;
+    // handleNext: ()=>void;
+    handleBack: ()=>void;
 }
 
-export default function CancellationReasonModal({handleNext} : ChildComponentProps) {
+export default function CancellationReasonModal({handleBack}: ChildComponentProps) {
   const router = useRouter();
   const [selectedReason, setSelectedReason] = useState('');
   const [otherReason, setOtherReason] = useState('');
@@ -37,7 +38,7 @@ export default function CancellationReasonModal({handleNext} : ChildComponentPro
   
   if (showOffer) {
     return (
-      <CancellationOffer selectedReason={selectedReason} onClose={onClose} />
+      <CancellationOffer selectedReason={selectedReason} handleBack={handleBack} onClose={onClose} />
     );
   }
 
