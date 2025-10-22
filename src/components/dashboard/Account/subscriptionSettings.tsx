@@ -7,7 +7,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useUser } from "@/app/context/UserContext"
 import Cookies from 'js-cookie';
-import { Circle } from 'lucide-react';
+import { Circle, Route } from 'lucide-react';
+import { useRouter } from "next/navigation"
 
 interface PlanData {
     id:string;
@@ -17,7 +18,9 @@ interface PlanData {
     renewalDate:string;
     duration:string
 }
-export default function SubscriptionSettings(){
+
+const SubscriptionSettings=()=>{
+    const router = useRouter();
     const {user} = useUser();
     const [plan,setPlan] = useState<Omit<PlanData, 'id'>>({
         name:"",
@@ -31,9 +34,12 @@ export default function SubscriptionSettings(){
     const [isLoading, setIsLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     useEffect(()=>{
+        console.log("in");
         if(!user || !user.id){
             return;
         }
+        console.log("pass");
+
         const fetchPlan = async ()=>{
             setIsLoading(true);
             console.log(user);
@@ -73,10 +79,25 @@ export default function SubscriptionSettings(){
     },[plan])
 
 
-    const handleCancel= ()=>{
+    const handleChangeSubscription= ()=>{
 
     }
 
+    const handleOpenFunnel= ()=>{
+
+        router.push('/dashboard/CancellationForm')
+    }
+    if (isLoading) {
+    return (
+      <div className="bg-gray-50 md:p-4 flex items-center justify-center">
+        <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
+          <CardContent className="flex items-center justify-center py-8">
+            <div className="text-gray-500">Loading Subscription data...</div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+    }
     return (
         <div className="bg-gray-50 flex items-center justify-center md:p-4 ">
           <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
@@ -93,7 +114,7 @@ export default function SubscriptionSettings(){
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-7">
                         <div className="border rounded-lg py-5 px-4 border-gray-400">
                             <div className="space-y-2">
-                                <div className="flex justify-between items-center">
+                                <div className="md:flex justify-between items-center">
                                 <p className="text-gray-500 text-sm">
                                 {plan.name}
                                 </p>
@@ -145,7 +166,7 @@ export default function SubscriptionSettings(){
                     <Button
                             type="button"
                             variant="outline"
-                            onClick={handleCancel}
+                            onClick={handleChangeSubscription}
                             disabled={isLoading}
                             className="bg-green-500 hover:bg-green-400 text-white border-green-500 hover:border-green-400 px-6 py-2.5 h-auto font-medium mx-2"
                         >
@@ -155,7 +176,7 @@ export default function SubscriptionSettings(){
                         <Button
                         type="button"
                         variant="outline"
-                        onClick={handleCancel}
+                        onClick={handleOpenFunnel}
                         disabled={isLoading}
                         className="hover:bg-gray-400 hover:text-white border-gray-400 hover:border-gray-400 px-6 py-2.5 h-auto font-medium mx-2"
                         >
@@ -167,3 +188,5 @@ export default function SubscriptionSettings(){
         </div>
       )
 }
+
+export default SubscriptionSettings;
