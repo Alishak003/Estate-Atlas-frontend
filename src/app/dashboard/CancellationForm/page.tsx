@@ -34,7 +34,7 @@ const CancellationForm = ()=>{
 
     useEffect(()=>{
         if(activeStep<=0){
-            router.push('dashboard/accountSettings');
+            router.push('accountSettings');
         }
     },[activeStep,router]);
 
