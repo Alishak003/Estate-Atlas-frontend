@@ -25,7 +25,7 @@ export default function DiscountFailed() {
         <CardFooter className="py-5 px-6 md:px-12">
           <div className="flex-col md:flex-row gap-4 w-full md:w-auto pt-5">
           <Button
-            className="bg-sky-500 hover:bg-sky-600 text-white border-sky-500 hover:border-sky-600 px-6 py-2.5 h-auto font-medium"
+            className="bg-sky-500 hover:bg-sky-600 text-white border-sky-500 hover:border-sky-600 px-6 md:mr-3 py-2.5 h-auto font-medium"
           >
             Contact Support Team
           </Button>
