@@ -2,11 +2,11 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 
-interface DiscountFailedProps {
-  errorMessage: string; // Optional custom error message
-}
+// interface DiscountFailedProps {
+//   errorMessage: string; // Optional custom error message
+// }
 
-export default function DiscountFailed({ errorMessage }: DiscountFailedProps) {
+export default function DiscountFailed() {
   return (
     <div className="bg-gray-50 md:p-4 flex justify-center">
       <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
@@ -20,11 +20,11 @@ export default function DiscountFailed({ errorMessage }: DiscountFailedProps) {
             We understand this can be frustrating, and we’re here to help.
           </p>
 
-          {errorMessage && (
+          {/* {errorMessage && (
             <p className="text-gray-600 mb-6 font-poppins">
               <strong>Reason:</strong> {errorMessage}
             </p>
-          )}
+          )} */}
 
           <p className="text-gray-500 font-poppins">
             Please try again, or reach out to our support team for assistance.  
