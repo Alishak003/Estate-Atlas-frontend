@@ -2,11 +2,9 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 
-interface DiscountFailedProps {
-  errorMessage?: string; // Optional custom error message
-}
 
-export default function DiscountFailed({ errorMessage }: DiscountFailedProps) {
+
+export default function DiscountFailed() {
   return (
     <div className="bg-gray-50 md:p-4 flex justify-center">
       <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
@@ -19,11 +17,6 @@ export default function DiscountFailed({ errorMessage }: DiscountFailedProps) {
             Sorry! We were unable to apply your discount to your subscription at this moment.
           </p>
 
-          {errorMessage && (
-            <p className="text-gray-700 mb-6 font-poppins">
-              <strong>Reason:</strong> {errorMessage}
-            </p>
-          )}
 
           <p className="text-gray-500 font-poppins">
             Please try again or contact our support team for assistance.
