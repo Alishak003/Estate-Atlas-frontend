@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 
 interface DiscountFailedProps {
-  errorMessage?: string; // Optional custom error message
+  errorMessage: string; // Optional custom error message
 }
 
 export default function DiscountFailed({ errorMessage }: DiscountFailedProps) {
