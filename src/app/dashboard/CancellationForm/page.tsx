@@ -14,6 +14,7 @@ const CancellationForm = ()=>{
 
     const [activeStep, setActiveStep] = useState<Step>(initialStep);
     const [selectedReason, setSelectedReason] = useState('');
+    const [duration, setDuration] = useState('');
     const [otherReason, setOtherReason] = useState('');
 
     const handleBack = ()=>{
@@ -53,8 +54,8 @@ const CancellationForm = ()=>{
 
     return(
         <>
-            {activeStep === 1 && <CancellationReasonModal selectedReason={selectedReason} setSelectedReason={setSelectedReason} handleBack={handleBack} handleNext={handleNext} />}
-            {activeStep === 2 && <CancellationOffer setOtherReason={setOtherReason} selectedReason={selectedReason} otherReason={otherReason} handleBack={handleBack} handleNext={handleNext} />}
+            {activeStep === 1 && <CancellationReasonModal selectedReason={selectedReason} setSelectedReason={setSelectedReason} handleBack={handleBack} handleNext={handleNext} setDuration={setDuration}/>}
+            {activeStep === 2 && <CancellationOffer setOtherReason={setOtherReason} selectedReason={selectedReason} otherReason={otherReason} handleBack={handleBack} handleNext={handleNext} duration = {duration}/>}
             {activeStep === 3 && <CancellationConfirmation handleSubmit = {handleSubmit} handleBack = {handleBack} />}
         </>
     )

@@ -15,8 +15,7 @@ export default function CheckoutSuccess() {
       if ( user && user.id) {
           const refreshUserData = async () => {
               const token = Cookies.get('token');
-              // Call a secure API endpoint that fetches the user data from the DB
-              // (The DB status would have been updated by the Stripe webhook)
+
               const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
                   method: 'GET', // Or POST if you prefer
                   headers: {
@@ -28,7 +27,7 @@ export default function CheckoutSuccess() {
                   const refreshedData = await response.json();
                   
                   // 3. Update the user state and the cookie with the new data
-                  setUser(refreshedData.user);
+                  setUser(refreshedData.data);
                   Cookies.set('user', JSON.stringify(refreshedData.user), { expires: 7, path: '/' });
                   
                   // OPTIONAL: Clean up the URL so the refresh doesn't happen again

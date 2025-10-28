@@ -84,7 +84,6 @@ const SubscriptionSettings=()=>{
     }
 
     const handleOpenFunnel= ()=>{
-
         router.push('/dashboard/CancellationForm')
     }
     if (isLoading) {

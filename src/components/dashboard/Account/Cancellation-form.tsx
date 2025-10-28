@@ -2,16 +2,20 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Cookies from 'js-cookie';
+
 
 const reasons = [
   'It is too expensive.',
   'I am not using the service enough.',
   'I found a competitor I like better.',
   "I can't find the data I need.",
-  'Technical issues or bugs.',
+  "I'm experiencing technical issues or bugs.",
+  'My project/investment is finished.',
+  'The platform is too difficult to use.',
   'Other',
 ];
 
@@ -19,11 +23,14 @@ interface ChildComponentProps {
     handleNext: ()=>void
     handleBack: ()=>void
     setSelectedReason : React.Dispatch<React.SetStateAction<string>>;
+    setDuration : React.Dispatch<React.SetStateAction<string>>;
     selectedReason: string;
 }
 
-export default function CancellationReasonModal({handleNext,handleBack, selectedReason, setSelectedReason}: ChildComponentProps) {
+export default function CancellationReasonModal({handleNext,handleBack, selectedReason, setSelectedReason, setDuration}: ChildComponentProps) {
   const router = useRouter();
+  const[loading,setLoading] = useState(false);
+  const token = Cookies.get('token');
   // const [otherReason, setOtherReason] = useState('');
 
   const onClose=()=>{
@@ -32,8 +39,41 @@ export default function CancellationReasonModal({handleNext,handleBack, selected
 
   const handleSubmitReason = (e:React.FormEvent) => {
     e.preventDefault();
-    handleNext();
+    setLoading(true);
+
+    const submitFunc = async()=>{
+      if(selectedReason === "It is too expensive."){
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/plan`,{
+                method:"GET",
+                headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+                }
+            });
+            const data = await res.json();
+
+            if(!res.ok){
+                // console.log("error");
+                // setErrors(["error fetching current plan data."]);
+                // setSuccess(false);
+            }else{
+                console.log(data.data);
+                const {duration} = data.data;
+                setDuration(duration ?? "");
+            }
+        setLoading(false);
+        handleNext();
+      }else{
+        setLoading(false);
+        handleNext();
+      }
+      setLoading(false);
+
+    }
+    submitFunc();
   };
+
+
   
 
   // JSX for the reason selection form (radio buttons, etc.)
@@ -54,7 +94,7 @@ export default function CancellationReasonModal({handleNext,handleBack, selected
         </p>
 
         <form onSubmit={handleSubmitReason} className="space-y-6 text-left">
-          <div className="space-y-3 pt-5 overflow-y-scroll">
+          <div className="space-y-3 pt-5 overflow-y-scroll md:max-h-[250px]">
             {reasons.map((reason) => (
               <label
                 key={reason}
@@ -83,10 +123,10 @@ export default function CancellationReasonModal({handleNext,handleBack, selected
             </Button>
             <Button
               type="submit"
-              disabled={!selectedReason}
+              disabled={!selectedReason || loading}
               className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-2.5 h-auto font-medium"
             >
-              Continue
+              {loading ? 'Loading...' : 'Continue'}
             </Button>
           </div>
         </form>

@@ -9,7 +9,6 @@ type User = {
   last_name: string;
   email: string;
   phone:string,
-  status:string,
 };
 
 interface IUserContext {
