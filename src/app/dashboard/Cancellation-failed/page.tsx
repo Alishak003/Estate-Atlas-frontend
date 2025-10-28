@@ -1,11 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-
-// interface DiscountFailedProps {
-//   errorMessage: string; // Optional custom error message
-// }
-
 export default function DiscountFailed() {
   return (
     <div className="bg-gray-50 md:p-4 flex justify-center">
@@ -19,12 +14,6 @@ export default function DiscountFailed() {
             Something went wrong while trying to cancel your subscription.  
             We understand this can be frustrating, and we’re here to help.
           </p>
-
-          {/* {errorMessage && (
-            <p className="text-gray-600 mb-6 font-poppins">
-              <strong>Reason:</strong> {errorMessage}
-            </p>
-          )} */}
 
           <p className="text-gray-500 font-poppins">
             Please try again, or reach out to our support team for assistance.  

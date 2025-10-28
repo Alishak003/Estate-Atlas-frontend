@@ -19,6 +19,7 @@ interface ChildComponentProps {
 const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason, setOtherReason, duration} : ChildComponentProps) => {
 
   const [isCancelling, setIsCancelling] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const cancellationRemedies = [
     {
       "reason": "It is too expensive.monthly",
@@ -104,6 +105,7 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
   const handleAcceptOffer = async () => {
     if(offer){
       if(offer.action_link_type == "discount"){
+        setIsLoading(true);
         try {
           const token = Cookies.get('token');
 
@@ -122,6 +124,7 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
         } catch (error) {
           console.log("eror went wrong : ",error);
         }
+        setIsLoading(false);
       }
     }
   };
@@ -153,6 +156,7 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
         <div className="flex-col md:flex-row gap-4 w-full md:w-auto pt-5">
           <Button
             onClick={handleAcceptOffer}
+            disabled={isLoading}
             className="bg-sky-500 hover:bg-sky-600 text-white border-sky-500 hover:border-sky-600 px-6 py-2.5 h-auto font-medium"
           >
             {offer?.action_button_text}
