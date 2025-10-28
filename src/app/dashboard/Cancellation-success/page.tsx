@@ -1,15 +1,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-// interface DiscountSuccessProps {
-//   endDate: string;
-// }
 
 export default function DiscountSuccess() {
-  // Format dates nicely
-  // const formatDate = (dateStr: string) => {
-  //   const date = new Date(dateStr);
-  //   return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-  // };
 
   return (
     <div className="bg-gray-50 md:p-4 flex justify-center">

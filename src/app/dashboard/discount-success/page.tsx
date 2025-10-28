@@ -1,11 +1,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-interface DiscountSuccessProps {
-  startDate: string;
-  endDate: string;
-}
 
-export default function DiscountSuccess({ startDate, endDate }: DiscountSuccessProps) {
+export default function DiscountSuccess() {
   // Format dates nicely
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -24,12 +20,6 @@ export default function DiscountSuccess({ startDate, endDate }: DiscountSuccessP
             Congratulations! Your discount has been applied to your subscription. 
             You can now enjoy your savings immediately.
           </p>
-
-          {startDate && endDate && (
-            <p className="text-gray-700 mb-6">
-              <strong>Discount Period:</strong> {formatDate(startDate)} – {formatDate(endDate)}
-            </p>
-          )}
 
           <p className="text-gray-500 font-poppins">
             If you have any questions or issues, feel free to contact our support team.
