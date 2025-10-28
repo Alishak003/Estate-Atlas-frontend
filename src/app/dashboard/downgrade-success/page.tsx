@@ -1,23 +1,8 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-interface DowngradeSuccessPageProps {
-  searchParams?: {
-    effectiveDate?: string; // Expect effectiveDate to be passed as a URL query parameter
-  };
-}
 
-// ⚠️ Note: We removed the custom DowngradeSuccessProps interface from the function signature
 
-export default function DowngradeSuccess({ searchParams }: DowngradeSuccessPageProps) {
-  const effectiveDate = searchParams?.effectiveDate;
-
-  const formatDate = (dateStr: string | undefined) => {
-    if (!dateStr) return 'N/A'; // Handle case where effectiveDate is missing
-
-    // The rest of your formatting logic
-    const date = new Date(dateStr);
-    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-  };
+export default function DowngradeSuccess() {
 
   return (
     <div className="bg-gray-50 md:p-4 flex justify-center">
@@ -29,7 +14,7 @@ export default function DowngradeSuccess({ searchParams }: DowngradeSuccessPageP
 
           <p className="text-gray-700 mb-6 font-poppins">
             Great news! Your subscription has been successfully downgraded to the <strong>Basic Plan</strong>. 
-            This change will take effect starting from <strong>{formatDate(effectiveDate)}</strong>. 
+            This change will take effect starting from <strong>*Date*</strong>. 
             You can continue enjoying all the essential features you love, now with a simpler plan that better fits your needs.
           </p>
 
