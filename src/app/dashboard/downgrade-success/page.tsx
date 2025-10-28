@@ -1,12 +1,20 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-interface DowngradeSuccessProps {
-  effectiveDate: string;
+interface DowngradeSuccessPageProps {
+  searchParams?: {
+    effectiveDate?: string; // Expect effectiveDate to be passed as a URL query parameter
+  };
 }
 
-export default function DowngradeSuccess({ effectiveDate }: DowngradeSuccessProps) {
-  const formatDate = (dateStr: string) => {
+// ⚠️ Note: We removed the custom DowngradeSuccessProps interface from the function signature
+
+export default function DowngradeSuccess({ searchParams }: DowngradeSuccessPageProps) {
+  const effectiveDate = searchParams?.effectiveDate;
+
+  const formatDate = (dateStr: string | undefined) => {
+    if (!dateStr) return 'N/A'; // Handle case where effectiveDate is missing
+
+    // The rest of your formatting logic
     const date = new Date(dateStr);
     return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
   };
