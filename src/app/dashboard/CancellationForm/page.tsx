@@ -5,8 +5,8 @@ import CancellationReasonModal from "@/components/dashboard/Account/Cancellation
 import CancellationOffer from "@/components/dashboard/Account/cancellation-offer";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import CompetitionFeedback from "../CompetitionFeedback/page";
 import { TutorialVideo } from "@/components/dashboard/Account/TutorialVideo";
+import { FeedbackForm } from "@/components/dashboard/Account/feedback-form";
 
 const CancellationForm = ()=>{
     const router = useRouter();
@@ -79,7 +79,7 @@ const CancellationForm = ()=>{
             {activeStep === "default" && <CancellationReasonModal selectedReason={selectedReason} setSelectedReason={setSelectedReason} handleBack={handleBack} handleNext={handleNext} setDuration={setDuration}/>}
             {activeStep === "CancellationOffer" && <CancellationOffer setOtherReason={setOtherReason} selectedReason={selectedReason} otherReason={otherReason} handleBack={handleBack} handleNext={handleNext} duration = {duration}/>}
             {activeStep === "CancellationConfirmation" && <CancellationConfirmation handleSubmit = {handleSubmit} handleBack = {handleBack}/>}
-            {activeStep === "CompetitionFeedback" && <CompetitionFeedback handleBack = {handleBack}/>}
+            {activeStep === "CompetitionFeedback" && <FeedbackForm handleBack={handleBack}/>}
             {activeStep === "TutorialVideo" && <TutorialVideo url="https://www.youtube.com/embed/watch?v=1OAjeECW90E&list=RD1OAjeECW90E&start_radio=1" handleBack={handleBack}/>}
         </>
     )
