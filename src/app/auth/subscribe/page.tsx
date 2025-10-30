@@ -114,12 +114,18 @@ export default function RegisterForm() {
         setError(data.message || 'Registration failed');
         
       } else {
+        const userData = {
+          'id':data.user.id,
+          'first_name':data.user.first_name,
+          'last_name':data.user.last_name,
+          'email':data.user.email,
+          'phone':data.user.phone,
+          'status':data.user.status
+        }
         setSuccess('Registration successful!');
         Cookies.set('token', data.token, { expires: 7, path: '/' });
         Cookies.set('user', JSON.stringify(data.user), { expires: 7, path: '/' });
-        
-        setUser(data.user);
-        const userData = data.user;
+        setUser(userData);
         try{
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`,{
           method: 'POST',
@@ -130,7 +136,7 @@ export default function RegisterForm() {
           body: JSON.stringify({
             price_slug:formData.price_slug,
             is_yearly: isYearly,
-            user_data : userData
+            user_data : data.user
           })
         }); 
 

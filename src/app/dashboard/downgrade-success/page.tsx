@@ -13,19 +13,17 @@ export default function DowngradeSuccess() {
           </h1>
 
           <p className="text-gray-700 mb-6 font-poppins">
-            Great news! Your subscription has been successfully downgraded to the <strong>Basic Plan</strong>. 
+            Great news! Your subscription has been successfully downgraded to our<strong>Monthly Plan</strong>. 
             This change will take effect starting from <strong>*Date*</strong>. 
             You can continue enjoying all the essential features you love, now with a simpler plan that better fits your needs.
           </p>
 
           <p className="text-gray-700 mb-6 font-poppins">
-            We understand that sometimes plans need to change, and we’re happy to make it easy for you. 
-            Even on the Basic Plan, you’ll still have access to key tools and resources to help you stay productive and get the most out of your subscription.
+            We understand that sometimes plans need to change, and we&apos;re happy to make it easy for you. Even on the Monthly Plan, you&apos;ll still have access to key tools and resources to help you stay productive and get the most out of your subscription.
           </p>
 
           <p className="text-gray-700 mb-6 font-poppins">
-            Remember, you can always upgrade again in the future if your needs grow or if you want to explore premium features. 
-            Our team is always here to support you along the way.
+            Remember, you can always upgrade again in the future if your needs grow or if you want to explore premium features. Our team is always here to support you along the way.
           </p>
 
           <p className="text-gray-500 font-poppins">
@@ -44,3 +42,4 @@ export default function DowngradeSuccess() {
     </div>
   );
 }
+

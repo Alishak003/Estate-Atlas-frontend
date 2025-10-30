@@ -7,92 +7,92 @@ import logo from "../../public/logo.png"
 import { Calculator, ChartBarStacked, ChartNoAxesCombined, ChartPie, CreditCard, FileChartColumn,  Globe, Headset, LogOut, Save, UserCog, Users } from 'lucide-react';
 const Sidebar: FC = () => {
   const router = useRouter();
-const { setUser } = useUser();
+  const { setUser } = useUser();
 
 
-const handleLogout = async () => {
-  try {
-    const token = Cookies.get('token');
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const handleLogout = async () => {
+    try {
+      const token = Cookies.get('token');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (!res.ok) {
-      console.error("Logout failed");
+      if (!res.ok) {
+        console.error("Logout failed");
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      Cookies.remove("token");
+      Cookies.remove("user");
+      setUser(null);
+      router.push("/auth/login");
     }
-  } catch (err) {
-    console.error("Logout error:", err);
-  } finally {
-    Cookies.remove("token");
-    Cookies.remove("user");
-    setUser(null);
-    router.push("/auth/login");
-  }
-};
+  };
 
-  return (
-    <aside className="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r dark:bg-gray-900 dark:border-gray-700">
-      <Link href="/" className="flex items-center space-x-2">
-        <Image
-          src={logo}
-          alt="EstateAtlas Logo"
-          width={220}
-          height={28}
-        />
-        
-      </Link>
-
-      <div className="flex flex-col justify-between flex-1 mt-6">
-        <nav className="-mx-3 space-y-6">
-          {/* Main Menu */}
-          <div className="space-y-3">
-            <label className="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">
-              Main Menu
-            </label>
-
-            <NavItem href="Countries" label="All Countries" icon=  {<Globe />} />
-            <NavItem href="globaldata" label="Global Data" icon={    <ChartNoAxesCombined />} />
-            <NavItem href="Regional" label="Regional/City Data" icon={  <FileChartColumn/>} />
-            <NavItem href="Reports" label="Quarterly Reports" icon={    <ChartPie/>} />
-            <NavItem href="SavedCountries" label="Saved Countries" icon={    <Save/>}/>
-          </div>
-
-          {/* Investments */}
-          <div className="space-y-3">
-            <label className="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">
-              Investments
-            </label>
-
-            <NavItem href="InvestCalculator" label="Investment Calculator" icon={    <Calculator/>} />
-            <NavItem href="comparison" label="Comparison Tool" icon={    <ChartBarStacked/>} />
-          </div>
+    return (
+      <aside className="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r dark:bg-gray-900 dark:border-gray-700">
+        <Link href="/" className="flex items-center space-x-2">
+          <Image
+            src={logo}
+            alt="EstateAtlas Logo"
+            width={220}
+            height={28}
+          />
           
+        </Link>
 
-          {/* Settings */}
-          <div className="space-y-3">
-            <label className="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">
-              Settings
-            </label>
+        <div className="flex flex-col justify-between flex-1 mt-6">
+          <nav className="-mx-3 space-y-6">
+            {/* Main Menu */}
+            <div className="space-y-3">
+              <label className="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">
+                Main Menu
+              </label>
 
-            <NavItem href="affiliate " label="Affiliate Dashboard" icon={    <Users />} />
-            <NavItem href="accountSettings" label="Account Settings" icon={    <UserCog/>} />
-            <NavItem href="billing" label="Billing" icon={    <CreditCard />} />
-            <NavItem href="support" label="Support" icon=  {<Headset />} />
-            <NavItem href ="" label="Log Out" icon={    <LogOut onClick={handleLogout}  />} />
-          </div>
-        </nav>
-      </div>
-    </aside>
-  );
-};
+              <NavItem href="Countries" label="All Countries" icon=  {<Globe />} />
+              <NavItem href="globaldata" label="Global Data" icon={    <ChartNoAxesCombined />} />
+              <NavItem href="Regional" label="Regional/City Data" icon={  <FileChartColumn/>} />
+              <NavItem href="Reports" label="Quarterly Reports" icon={    <ChartPie/>} />
+              <NavItem href="SavedCountries" label="Saved Countries" icon={    <Save/>}/>
+            </div>
 
-import { ReactNode } from "react";
-import { useUser } from "@/app/context/UserContext";
-import { useRouter } from "next/navigation";
+            {/* Investments */}
+            <div className="space-y-3">
+              <label className="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">
+                Investments
+              </label>
+
+              <NavItem href="InvestCalculator" label="Investment Calculator" icon={    <Calculator/>} />
+              <NavItem href="comparison" label="Comparison Tool" icon={    <ChartBarStacked/>} />
+            </div>
+            
+
+            {/* Settings */}
+            <div className="space-y-3">
+              <label className="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">
+                Settings
+              </label>
+
+              <NavItem href="affiliate " label="Affiliate Dashboard" icon={    <Users />} />
+              <NavItem href="accountSettings" label="Account Settings" icon={    <UserCog/>} />
+              <NavItem href="billing" label="Billing" icon={    <CreditCard />} />
+              <NavItem href="support" label="Support" icon=  {<Headset />} />
+              <NavItem href ="" label="Log Out" icon={    <LogOut onClick={handleLogout}  />} />
+            </div>
+          </nav>
+        </div>
+      </aside>
+    );
+ };
+
+  import { ReactNode } from "react";
+  import { useUser } from "@/app/context/UserContext";
+  import { useRouter } from "next/navigation";
 
 interface NavItemProps {
   href: string;

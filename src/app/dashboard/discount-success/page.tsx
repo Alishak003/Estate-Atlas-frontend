@@ -1,8 +1,11 @@
+"use client"
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function DiscountSuccess() {
-
+  const router = useRouter();
   return (
     <div className="bg-gray-50 md:p-4 flex justify-center">
       <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
@@ -22,6 +25,7 @@ export default function DiscountSuccess() {
         </CardContent>
         <CardFooter className="py-5 px-6 md:px-12">
           <Button
+          onClick={()=>router.replace('/dashboard/Countries')}
           variant="outline"
            className="bg-sky-500 text-white py-5 px-6 border-sky-500 hover:bg-sky-600"
           >

@@ -16,7 +16,9 @@ interface PlanData {
     price:string;
     status:string;
     renewalDate:string;
-    duration:string
+    duration:string;
+    is_paused:boolean;
+    resumeDate:string;
 }
 
 const SubscriptionSettings=()=>{
@@ -27,7 +29,9 @@ const SubscriptionSettings=()=>{
         price:"",
         status:"",
         renewalDate:"",
-        duration:""
+        duration:"",
+        resumeDate:"",
+        is_paused:false
     })
 
     const [errors, setErrors] = useState<string[]>([])
@@ -59,13 +63,24 @@ const SubscriptionSettings=()=>{
                 setSuccess(false);
             }else{
                 console.log(data.data);
-                const {name,price,renewalDate,status,duration} = data.data;
+                const {name,price,renewalDate,status,is_paused,paused_at,duration} = data.data;
+                let resumeDate = "";
+                let calculatedRenewalDate = renewalDate ?? "";
+
+                if (is_paused && paused_at) {
+                const pausedAtDate = new Date(paused_at);
+                pausedAtDate.setMonth(pausedAtDate.getMonth() + 3); // add 3 months
+                resumeDate = pausedAtDate.toISOString().split("T")[0]; // e.g., "2026-01-29"
+                calculatedRenewalDate = resumeDate;
+                }
                 setPlan({
                     name:name ?? "",
-                    status:status ?? "",
+                    status:is_paused ? 'paused' : status,
                     price: String(price) ?? "",
-                    renewalDate: renewalDate?? "",
-                    duration:duration??""
+                    renewalDate: calculatedRenewalDate?? "",
+                    duration:duration??"",
+                    is_paused:is_paused??false,
+                    resumeDate:resumeDate??""
                 });
             }
             setIsLoading(false);
@@ -117,8 +132,15 @@ const SubscriptionSettings=()=>{
                                 <p className="text-gray-500 text-sm">
                                 {plan.name}
                                 </p>
-                                <button className={`text-xs px-3 flex items-center py-1 rounded-full border font-semibold ${plan.status === 'active' ? 'bg-green-200 text-green-800 border-green-500':'bg-red-200 text-red-800 border-red-500'}`}> 
-                                    {plan.status === 'active'?<Circle size={8} color="green" fill="green" /> : <Circle size={8} color="red" fill="red" />}
+                                <button className={`text-xs px-3 flex items-center py-1 rounded-full border font-semibold ${(plan.status === 'active') ? ('bg-green-200 text-green-800 border-green-500') : (plan.status === "paused") ? ('bg-yellow-200 text-yellow-800 border-yellow-500'):('bg-red-200 text-red-800 border-red-500')}`}> 
+                                {(plan.status === 'active') ? (
+                                <Circle size={8} color="green" fill="green" />
+                                ) : (plan.status === "paused") ? (
+                                <Circle size={8} color="orange" fill="orange" />
+                                ) : (
+                                <Circle size={8} color="red" fill="red" />
+                                )}
+
                                     <span className="ps-1">{plan.status}</span>
                                 </button>
                                 </div>
@@ -132,16 +154,22 @@ const SubscriptionSettings=()=>{
                         <div className="border rounded-lg py-5 px-4 border-gray-400">
                             <div className="space-y-2">
                                 <p className="text-gray-500 text-sm">
-                                Renewal date
+                                {plan.status === "active" ? ("Renewal date") : plan.status === "paused" ? ('Current cycle Ends at'): "Ended at"}
                                 </p>
                                 <h1 className="text-gray-700 font-semibold text-xl">
                                     {plan.renewalDate}
                                 </h1>
                                 
                             </div>
+                            
                         </div>
                     </div>
 
+                    <div>
+                        <p className="text-gray-500 text-xs">
+                            {plan.status === "paused" ? (`Note : Account will automatically Resume from ${plan.resumeDate}`) : ("")}
+                        </p>        
+                    </div>
 
                     {errors.length > 0 && (
                         <Alert variant="destructive">
@@ -162,12 +190,13 @@ const SubscriptionSettings=()=>{
                         </AlertDescription>
                         </Alert>
                     )}
+                    {plan.status !== "paused" && <>
                     <Button
                             type="button"
                             variant="outline"
                             onClick={handleChangeSubscription}
                             disabled={isLoading}
-                            className="bg-green-500 hover:bg-green-400 text-white border-green-500 hover:border-green-400 px-6 py-2.5 h-auto font-medium mx-2"
+                            className="bg-green-500 hover:bg-green-400 text-white border-green-500 hover:border-green-400 px-6 py-2.5 h-auto font-medium md:mr-2"
                         >
                             Change plan
                         </Button>
@@ -181,6 +210,19 @@ const SubscriptionSettings=()=>{
                         >
                         Cancel Subscription
                     </Button>
+                    </>}
+                    {plan.status === "paused" &&
+                    <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleChangeSubscription}
+                            disabled={isLoading}
+                            className="bg-green-500 hover:bg-green-400 text-white border-green-500 hover:border-green-400 px-6 py-2.5 h-auto font-medium md:mr-2"
+                    >
+                            Resume Subscripiton
+                    </Button>
+                    }
+                    
                 </div>
             </CardContent>
           </Card>

@@ -20,8 +20,9 @@ const reasons = [
 ];
 
 interface ChildComponentProps {
-    handleNext: ()=>void
-    handleBack: ()=>void
+    handleBack : (stepValue:string)=>void,
+    handleNext : (stepValue:string)=>void
+
     setSelectedReason : React.Dispatch<React.SetStateAction<string>>;
     setDuration : React.Dispatch<React.SetStateAction<string>>;
     selectedReason: string;
@@ -37,11 +38,9 @@ export default function CancellationReasonModal({handleNext,handleBack, selected
     router.push('/dashboard/Countries');
   }
 
-  const handleSubmitReason = (e:React.FormEvent) => {
+  const handleSubmitReason = async(e:React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    const submitFunc = async()=>{
       if(selectedReason === "It is too expensive."){
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/plan`,{
                 method:"GET",
@@ -53,24 +52,21 @@ export default function CancellationReasonModal({handleNext,handleBack, selected
             const data = await res.json();
 
             if(!res.ok){
-                // console.log("error");
+                console.log("error");
                 // setErrors(["error fetching current plan data."]);
                 // setSuccess(false);
             }else{
-                console.log(data.data);
-                const {duration} = data.data;
-                setDuration(duration ?? "");
+                const {duration} = data.data ?? "";
+                setDuration(duration);
+                console.log("duration:",duration);
             }
         setLoading(false);
-        handleNext();
+        handleNext("CancellationOffer");
       }else{
         setLoading(false);
-        handleNext();
+        handleNext("CancellationOffer");
       }
       setLoading(false);
-
-    }
-    submitFunc();
   };
 
 
@@ -81,7 +77,7 @@ export default function CancellationReasonModal({handleNext,handleBack, selected
   <div className="bg-gray-50 md:p-4 flex items-center justify-center">
     <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
       <CardContent className="py-10 px-6 md:px-10">
-        <Button onClick={handleBack}
+        <Button onClick={()=>handleBack("AccountSettings")}
         className="px-0 shadow-none text-sky-500 py-2 bg-transparent hover:bg-transparent hover:text-sky-600"
         >
          &lt; Back

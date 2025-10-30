@@ -3,60 +3,84 @@
 import CancellationConfirmation from "@/components/dashboard/Account/cancellation-confirmation";
 import CancellationReasonModal from "@/components/dashboard/Account/Cancellation-form";
 import CancellationOffer from "@/components/dashboard/Account/cancellation-offer";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-type Step = 0|1|2|3;
+import CompetitionFeedback from "../CompetitionFeedback/page";
+import { TutorialVideo } from "@/components/dashboard/Account/TutorialVideo";
+
 const CancellationForm = ()=>{
     const router = useRouter();
-    const {step} = useParams();
-    const stepNumber = Number(step);
-    const initialStep: Step = [0,1,2,3].includes(stepNumber) ? (stepNumber as Step) : 1;
-
-    const [activeStep, setActiveStep] = useState<Step>(initialStep);
+    const [activeStep, setActiveStep] = useState("");
     const [selectedReason, setSelectedReason] = useState('');
     const [duration, setDuration] = useState('');
     const [otherReason, setOtherReason] = useState('');
 
-    const handleBack = ()=>{
-        const nextStep = activeStep > 0 ? activeStep-1 as Step : activeStep;
+    const handleBack = (stepValue:string)=>{
+        const nextStep = stepValue;
         window.history.pushState(null, '', `?step=${nextStep}`);
         setActiveStep(nextStep);
     };
 
-    const handleNext = () => {
-        const nextStep = activeStep < 3 ? activeStep+1 as Step : activeStep;
-        window.history.pushState(null, '', `?step=${nextStep}&reason=${selectedReason}&other=${otherReason}`);
-        setActiveStep(nextStep);
+    const handleNext = (stepValue:string) => {
+        const encodedReason = encodeURIComponent(selectedReason || '');
+        const encodedDuration = encodeURIComponent(duration || '');
+        const encodedOther = encodeURIComponent(otherReason || '');
+        const encodedStep = encodeURIComponent(stepValue || '');
+        window.history.pushState(null, '', `?step=${encodedStep}&reason=${encodedReason}&duration=${encodedDuration}&other=${encodedOther}`);
+        setActiveStep(stepValue);
     };
 
     const handleSubmit = ()=> {
 
     }
-
-    useEffect(()=>{
-        if(activeStep<=0){
-            router.push('accountSettings');
-        }
-    },[activeStep,router]);
-
     useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const urlStep = parseInt(params.get('step') ?? "1",10);
+    const urlStep = params.get('step') ?? "default";
     const urlReason = params.get('reason') ?? "";
     const urlOther = params.get('other') ?? "";
     
-    if (urlStep < 4) {
-        setActiveStep(urlStep as Step); 
+    if (urlStep) {
+        if(urlStep === "accountSettings"){
+            router.push('accountSettings');
+        }
+        switch (urlStep) {
+            case "CancellationOffer":
+                console.log(true);
+                setActiveStep("CancellationOffer");
+                break;
+            case "CancellationConfirmation":
+                setActiveStep("CancellationConfirmation");
+                break;
+            case "CompetitionFeedback":
+                setActiveStep("CompetitionFeedback");
+                break;
+            case "TutorialVideo":
+                setActiveStep("TutorialVideo");
+                break;
+            default:
+                setActiveStep("default");
+                break;
+        }
         setSelectedReason(urlReason);
         setOtherReason(urlOther);
+        // if(duration){
+        // setDuration(duration);
+        // }
     }
-    },[router]);
+    console.log(urlStep,urlReason,urlOther);
+    },[activeStep,router]);
+
+    // useEffect(()=>{
+    //     
+    // },[activeStep,router]);    
 
     return(
         <>
-            {activeStep === 1 && <CancellationReasonModal selectedReason={selectedReason} setSelectedReason={setSelectedReason} handleBack={handleBack} handleNext={handleNext} setDuration={setDuration}/>}
-            {activeStep === 2 && <CancellationOffer setOtherReason={setOtherReason} selectedReason={selectedReason} otherReason={otherReason} handleBack={handleBack} handleNext={handleNext} duration = {duration}/>}
-            {activeStep === 3 && <CancellationConfirmation handleSubmit = {handleSubmit} handleBack = {handleBack} />}
+            {activeStep === "default" && <CancellationReasonModal selectedReason={selectedReason} setSelectedReason={setSelectedReason} handleBack={handleBack} handleNext={handleNext} setDuration={setDuration}/>}
+            {activeStep === "CancellationOffer" && <CancellationOffer setOtherReason={setOtherReason} selectedReason={selectedReason} otherReason={otherReason} handleBack={handleBack} handleNext={handleNext} duration = {duration}/>}
+            {activeStep === "CancellationConfirmation" && <CancellationConfirmation handleSubmit = {handleSubmit} handleBack = {handleBack}/>}
+            {activeStep === "CompetitionFeedback" && <CompetitionFeedback handleBack = {handleBack} handleNext={handleNext}/>}
+            {activeStep === "TutorialVideo" && <TutorialVideo url="https://www.youtube.com/embed/watch?v=1OAjeECW90E&list=RD1OAjeECW90E&start_radio=1" handleBack={handleBack}/>}
         </>
     )
 }

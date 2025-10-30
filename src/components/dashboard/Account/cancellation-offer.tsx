@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useState } from "react";
 import Cookies from 'js-cookie';
+import { useRouter } from "next/navigation";
 
 // components/CancellationOffer.js (Example)
 interface ChildComponentProps {
     // onClose: ()=>void;
-    handleBack: ()=>void;
-    handleNext: ()=>void;
+    handleBack: (stepValue:string)=>void;
+    handleNext: (stepValue:string)=>void;
     selectedReason: string;
     otherReason: string;
     setOtherReason : React.Dispatch<React.SetStateAction<string>>;
@@ -17,22 +18,22 @@ interface ChildComponentProps {
 
 }
 const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason, setOtherReason, duration} : ChildComponentProps) => {
-
+  const router = useRouter();
   const [isCancelling, setIsCancelling] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const cancellationRemedies = [
     {
       "reason": "It is too expensive.monthly",
-      "remedy_title": "Get 30% Discount: We Want to Keep You as a Valued Professional",
-      "remedy_content": "We understand budget concerns! We understand. As a valued professional, We'd like to offer you an <strong>exclusive 30% discount</strong> on your current subscription for the next <strong>3 months</strong>. This is our best retention offer, designed to give you a financial break while you continue to access all the features you rely on.  <br/><br/> <ul class='mt-3 ml-5 list-disc'> <li><strong>Keep everything you have.</strong> No need to downgrade or lose premium features. </li><li><strong>Seamless transition.</strong> The discount applies instantly—no action needed on your part after claiming.</li></ul>",
+      "remedy_title": "Get a 30% Discount: We Want to Keep You as a Valued Client",
+      "remedy_content": "We understand budget concerns! As a valued professional, We'd like to offer you an exclusive<strong> 30% discount</strong> on your current subscription for the <strong>next 3 months</strong>. This is designed to give you a financial break while you continue to access all the features you rely on.  <br/><br/> <ul class='mt-3 ml-5 list-disc'> <li><strong>Keep everything you have.</strong> No need to downgrade or lose premium features. </li><li><strong>Seamless transition.</strong> The discount applies instantly—no action needed on your part after claiming.</li></ul>",
       "action_button_text": "Keep Discount and Stay",
       "action_link_type": "discount"
     },
     {
       "reason": "It is too expensive.yearly",
-      "remedy_title": "Switch to Our Basic Plan and Save Instantly",
-      "remedy_content": "We understand that yearly costs can add up! Instead of canceling, you can <strong>downgrade to our Basic Plan</strong> and still enjoy essential features at a lower cost. This option helps you stay connected to what matters most—without stretching your budget. <br/><br/> <ul class='mt-3 ml-5 list-disc'> <li><strong>Lower monthly cost.</strong> Keep using our core features while saving money.</li><li><strong>No interruption.</strong> Your account and data remain intact during the switch.</li></ul>",
-      "action_button_text": "Downgrade to Basic",
+      "remedy_title": "Switch To Our Monthly Plan And Save Instantly",
+      "remedy_content": "We understand that yearly costs can add up! Instead of canceling, you can <strong>downgrade to our Monthly Plan at the end of your yearly billing cycle</strong> and still enjoy essential features. This option helps you stay connected to what matters most—without stretching your budget. <br/><br/> <ul class='mt-3 ml-5 list-disc'> <li><strong>No interruption.</strong> Your account and data remain intact during the switch.</li></ul>",
+      "action_button_text": " Downgrade to Our Monthly Plan at the end of your yearly billing cycle",
       "action_link_type": "downgrade"
     },
 
@@ -81,60 +82,122 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
     {
       "reason": "The platform is too difficult to use.",
       "remedy_title": "Let Us Walk You Through It — 1-on-1 Help Available",
-      "remedy_content": "We’re really sorry to hear that you’ve had a hard time getting comfortable with the platform. You’re not alone — many professionals find that a quick <strong>1-on-1 walkthrough</strong> makes all the difference.<br/><br/>We’d love to personally show you how to get the most out of your subscription. <br/><br/><ul class='mt-3 ml-5 list-disc'><li><strong>Book a free 15-minute demo.</strong> A real human will guide you through your setup and workflows.</li><li><strong>Access quick tutorials.</strong> Learn step-by-step at your own pace with short videos and guides.</li></ul>",
+      "remedy_content": "We’re really sorry to hear that you’ve had a hard time getting comfortable with the platform. You’re not alone — many professionals find that a quick <strong>1-on-1 walkthrough</strong> makes all the difference.<br/><br/>We’d love to personally show you how to get the most out of your subscription. <br/><br/><ul class='mt-3 ml-5 list-disc'><li><strong>Access quick tutorials.</strong> Learn step-by-step at your own pace with short videos and guides.</li></ul>",
       "action_button_text": "Watch our Demo Tutorial",
       "action_link_type": "support"
     }
 
 
   ];
-
+  
   const offer = cancellationRemedies.find(
-    (item) => item.reason === `${selectedReason}${duration}`
-  )
-
+  (item) => item.reason === `${selectedReason}${duration}`
+    )
   const isSingleButtonFlow = ['survey','other_feedback'].includes(offer?.action_link_type ?? "");
   
   const handleConfirmCancel = async () => {
     setIsCancelling(true);
-    handleNext();
+    handleNext("CancellationConfirmation");
     setIsCancelling(false);
   };
   
   // This function handles accepting the offer
   const handleAcceptOffer = async () => {
     if(offer){
-      if(offer.action_link_type == "discount"){
-        setIsLoading(true);
-        try {
-          const token = Cookies.get('token');
+      setIsLoading(true);
+      switch (offer.action_link_type) {
+        case "discount":
+          try {
+            const token = Cookies.get('token');
 
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subscription/apply-discount`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'Authorization': `Bearer ${token}`},
-            body: JSON.stringify({ promo_code: 'RETENTION_30_OFF_3MO' }),
-          });
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subscription/apply-discount`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${token}`},
+              body: JSON.stringify({ promo_code: 'RETENTION_30_OFF_3MO' }),
+            });
 
-          if(!res.ok){
-            console.log("error in res")
+            if(!res.ok){
+              console.log("error in res")
+            }
+
+            const data = await res.json();
+            if(data.success){ 
+              console.log('success');
+              window.location.href = "/dashboard/discount-success";
+            }
+            console.log("data : ",data);
+              window.location.href = "/dashboard/discount-failed";
+
+          } catch (error) {
+            console.log("eror went wrong : ",error);
           }
+          setIsLoading(false);
+          break;
+        
+        case "downgrade":
+          break;
+        
+        case "pause":
+          const token = Cookies.get('token');
+          try {
+            const res = await fetch (`${process.env.NEXT_PUBLIC_API_URL}/subscription/pause`,{
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+              }
 
-          const data = await res.json();
-          console.log("data : ",data);
-        } catch (error) {
-          console.log("eror went wrong : ",error);
-        }
-        setIsLoading(false);
+            });
+            const data = await res.json();
+
+            if(!res.ok){
+              console.log(data.message);
+            }
+
+            if (data.success) {
+              const url = `/dashboard/pause-success?pausedUntil=${encodeURIComponent(
+                data.paused_until
+              )}&nextBilling=${encodeURIComponent(data.next_billing_date)}`;
+              router.push(url);
+            }
+          } catch (error) {
+            console.log('cathc error : ', error)
+          }
+          setIsLoading(false);
+          break;
+
+        case "survey":
+          handleNext("CompetitionFeedback");
+          break;
+
+        case "tech_support":
+          router.push('/dashboard/support');
+          break;
+        
+        case "request_data":
+          break;
+        
+        case "other_feedback":
+          break;
+
+        case "support":
+          handleNext("TutorialVideo");
+          break;
+          
+        default:
+          break;
       }
-    }
-  };
+    setIsLoading(false);
+  }
+}
 
   return (
   <div className="bg-gray-50 md:p-4 flex items-center justify-center">
       <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
       
       <CardContent className=" py-10 px-6 md:px-12 min-h-[500px]">
-        <Button onClick={handleBack}
+        <Button onClick={()=>handleBack("default")}
         className="px-0 shadow-none text-sky-500 py-2 bg-transparent hover:bg-transparent hover:text-sky-600"
         >
          &lt; Back
@@ -176,7 +239,7 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
             }
           {isSingleButtonFlow && 
           <Button
-              onClick={handleConfirmCancel}
+              onClick={handleAcceptOffer}
               disabled={isCancelling || (offer?.action_link_type === "other_feedback" && !otherReason)}
               className={`mt-3 px-6 py-2.5 h-auto font-medium rounded-md
               ${isCancelling
