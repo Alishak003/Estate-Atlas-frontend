@@ -79,7 +79,7 @@ const CancellationForm = ()=>{
             {activeStep === "default" && <CancellationReasonModal selectedReason={selectedReason} setSelectedReason={setSelectedReason} handleBack={handleBack} handleNext={handleNext} setDuration={setDuration}/>}
             {activeStep === "CancellationOffer" && <CancellationOffer setOtherReason={setOtherReason} selectedReason={selectedReason} otherReason={otherReason} handleBack={handleBack} handleNext={handleNext} duration = {duration}/>}
             {activeStep === "CancellationConfirmation" && <CancellationConfirmation handleSubmit = {handleSubmit} handleBack = {handleBack}/>}
-            {activeStep === "CompetitionFeedback" && <CompetitionFeedback handleBack = {handleBack} handleNext={handleNext}/>}
+            {activeStep === "CompetitionFeedback" && <CompetitionFeedback handleBack = {handleBack}/>}
             {activeStep === "TutorialVideo" && <TutorialVideo url="https://www.youtube.com/embed/watch?v=1OAjeECW90E&list=RD1OAjeECW90E&start_radio=1" handleBack={handleBack}/>}
         </>
     )
