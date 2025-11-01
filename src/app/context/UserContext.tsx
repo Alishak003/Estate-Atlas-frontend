@@ -8,8 +8,8 @@ type User = {
   first_name: string;
   last_name: string;
   email: string;
-  phone:string,
-  status:string,
+  phone:string;
+  status:string;
 };
 
 interface IUserContext {

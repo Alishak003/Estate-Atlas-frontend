@@ -6,9 +6,11 @@ import Image from "next/image";
 import { useUser } from "@/app/context/UserContext";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import { useSubscription } from "@/app/context/SubscriptionContext";
 export default function LoginForm() {
   const router = useRouter();
   const { setUser } = useUser();
+  const {setSubscription} = useSubscription();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -46,9 +48,10 @@ export default function LoginForm() {
           expires: 7,
           path: "/",
         });
+      const userData = data.data.user;
+      const subscriptionData = data.data.subscription ?? {};
       
-      if(data.data.user.status === "pending"){
-        const userData = data.data.user;
+      if(userData.status === "pending"){
         try {
           const price_slug = userData.pending_plan_slug;
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`,{
@@ -65,6 +68,14 @@ export default function LoginForm() {
 
           const checkoutData = await response.json();
           if (response.ok && checkoutData.url) {
+            setUser({
+              id: userData.id,
+              first_name: userData.first_name,
+              last_name: userData.last_name,
+              email: userData.email,
+              phone:"",
+              status:userData.status,
+            });
             window.location.href = checkoutData.url;
           }
           else{
@@ -78,8 +89,36 @@ export default function LoginForm() {
         }
       }
       else{
-        const userData = data.data.user;
-        setUser(userData);
+        setUser({
+          id: userData.id,
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          email: userData.email,
+          phone:"",
+          status:userData.status,
+        });
+        setSubscription({
+          id: subscriptionData.id ?? "",
+          price: subscriptionData.price ?? "",
+          price_id: subscriptionData.price_id ?? "",
+          duration: subscriptionData.duration ?? "monthly",
+          tier: subscriptionData.tier ?? "none",
+          current_period_end: subscriptionData.current_period_end ?? "",
+          stripe_status: subscriptionData.stripe_status ?? "",
+          discount: subscriptionData.discount
+            ? {
+                value_off: subscriptionData.discount.discount_value ?? 0,
+                type: subscriptionData.discount.discount_type ?? "",
+                ends_at: subscriptionData.discount.discount_ends_at ?? "",
+              }
+            : null,
+          is_paused: subscriptionData.is_paused
+            ? {
+                paused_at: subscriptionData.is_paused.paused_at ?? "",
+              }
+            : null,
+        });
+        Cookies.set("subscription", JSON.stringify(subscriptionData), { expires: 7, path: "/" });
         router.push("/dashboard/Countries");
       }
       }

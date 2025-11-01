@@ -1,5 +1,6 @@
 'use client';
 
+import { SubscriptionsProvider } from './context/SubscriptionContext';
 import { UserProvider } from './context/UserContext';
 
 
@@ -9,7 +10,11 @@ import { UserProvider } from './context/UserContext';
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     
-      <UserProvider>{children}</UserProvider>
+      <UserProvider>
+        <SubscriptionsProvider>
+          {children}
+        </SubscriptionsProvider>
+      </UserProvider>
     
   );
 }

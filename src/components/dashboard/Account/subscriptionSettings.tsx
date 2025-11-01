@@ -3,100 +3,140 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { useUser } from "@/app/context/UserContext"
+// import { useUser } from "@/app/context/UserContext"
 import Cookies from 'js-cookie';
 import { Circle } from 'lucide-react';
 import { useRouter } from "next/navigation"
+import { useSubscription } from "@/app/context/SubscriptionContext"
 
-interface PlanData {
-    id:string;
-    name:string;
-    price:string;
-    status:string;
-    renewalDate:string;
-    duration:string;
-    is_paused:boolean;
-    resumeDate:string;
-}
 
 const SubscriptionSettings=()=>{
     const router = useRouter();
-    const {user} = useUser();
-    const [plan,setPlan] = useState<Omit<PlanData, 'id'>>({
-        name:"",
-        price:"",
-        status:"",
-        renewalDate:"",
-        duration:"",
-        resumeDate:"",
-        is_paused:false
-    })
+    // const {user} = useUser();
+    const {subscription} = useSubscription();
+    const [price,setPrice] = useState(0);
+    const [accountStatus,setAccountStatus] = useState("");
+    const [resumeDate,setResumeDate] = useState("");
+    const [endsAt,setEndsAt] = useState("");
 
-    const [errors, setErrors] = useState<string[]>([])
+
+    // const [errors, setErrors] = useState<string[]>([])
     const [isLoading, setIsLoading] = useState(false)
-    const [success, setSuccess] = useState(false)
+    // const [success, setSuccess] = useState(false)
+
     useEffect(()=>{
-        console.log("in");
-        if(!user || !user.id){
-            return;
-        }
-        console.log("pass");
+        if(subscription){
+            const originalPrice = Number(subscription.price);
+            let discountedPrice = originalPrice;
+            if (subscription?.discount) {
+            const { value_off, type } = subscription.discount;
+            if (type === "amount" && value_off) {
+                discountedPrice = Math.max(originalPrice - value_off, 0);
+            } else if (type === "percent" && value_off) {
+                discountedPrice = originalPrice - (originalPrice * value_off) / 100;
+            }
+            }
 
-        const fetchPlan = async ()=>{
-            setIsLoading(true);
-            console.log(user);
-            const token = Cookies.get('token');
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/plan`,{
-                method:"GET",
-                headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-                }
-            });
-            const data = await res.json();
 
-            if(!res.ok){
-                console.log("error");
-                setErrors(["error fetching current plan data."]);
-                setSuccess(false);
-            }else{
-                console.log(data.data);
-                const {name,price,renewalDate,status,is_paused,paused_at,duration} = data.data;
-                let resumeDate = "";
-                let calculatedRenewalDate = renewalDate ?? "";
+            let resumeDate = "";
+            let current_period_end = "";
 
-                if (is_paused && paused_at) {
-                const pausedAtDate = new Date(paused_at);
-                pausedAtDate.setMonth(pausedAtDate.getMonth() + 3); // add 3 months
-                resumeDate = pausedAtDate.toISOString().split("T")[0]; // e.g., "2026-01-29"
-                calculatedRenewalDate = resumeDate;
-                }
-                setPlan({
-                    name:name ?? "",
-                    status:is_paused ? 'paused' : status,
-                    price: String(price) ?? "",
-                    renewalDate: calculatedRenewalDate?? "",
-                    duration:duration??"",
-                    is_paused:is_paused??false,
-                    resumeDate:resumeDate??""
+            if (subscription.is_paused && subscription.is_paused.paused_at) {
+                const isodate = new Date(subscription.is_paused.paused_at);
+                isodate.setMonth(isodate.getMonth() + 3);
+                resumeDate = isodate.toLocaleDateString('en-US', {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
                 });
             }
-            setIsLoading(false);
+            const isodate = new Date(subscription.current_period_end);
+            current_period_end = isodate.toLocaleDateString('en-US', {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+
+            const currStatus = subscription.is_paused ? "paused" : subscription.stripe_status ?? "unknown";
+
+            setAccountStatus(currStatus);
+            setResumeDate(resumeDate);
+            setEndsAt(current_period_end);
+            setPrice(discountedPrice);
+
+
         }
-        fetchPlan();
-
-    },[user])
-
-    useEffect(()=>{
-        console.log(plan);
-    },[plan])
+    },[subscription])
 
 
     const handleChangeSubscription= ()=>{
-
+        router.push('/auth/register');
     }
+
+    const handleResumeSubscription = async () => {
+    setIsLoading(true);
+    try {
+        const token = Cookies.get('token');
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subscription/resume`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            console.log('Subscription resumed:', data.subscription);
+            alert('Subscription resumed successfully!');
+            try {
+                const userData = {
+                    'user_data':"",
+                    'user_data.email':data?.email || "",
+                    'user_data.first_name':data?.first_name || "",
+                    'user_data.stripe_id':data?.stripe_id || "",
+                    'user_data.id':data?.user_id || "",
+                }
+                const price_slug = `${subscription?.tier ?? ""}${subscription?.duration ?? ""}`;
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`,{
+                    method: 'POST',
+                    headers:{
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    },
+                    body: JSON.stringify({
+                    price_slug:price_slug,
+                    user_data : userData
+                    })
+                }); 
+
+                const checkoutData = await response.json();
+                if (response.ok && checkoutData.url) {
+                    window.location.href = checkoutData.url;
+                }
+                else{
+                    console.log(checkoutData .message || "Checkout session creation failed. Kindly login to try again");
+                } 
+                } catch (error) {
+                    console.error('Checkout error:', error);
+                    router.push('/auth/login');
+                }
+        } else {
+            console.error('Failed to resume:', data.message);
+            alert('Error: ' + data.message);
+        }
+        } catch (error) {
+            console.error('Network or server error:', error);
+            alert('Something went wrong while resuming the subscription.');
+        }finally{
+            setIsLoading(false);
+        }
+    };
+
 
     const handleOpenFunnel= ()=>{
         router.push('/dashboard/CancellationForm')
@@ -130,23 +170,23 @@ const SubscriptionSettings=()=>{
                             <div className="space-y-2">
                                 <div className="md:flex justify-between items-center">
                                 <p className="text-gray-500 text-sm">
-                                {plan.name}
+                                {subscription?.tier} {subscription?.duration} Subscription
                                 </p>
-                                <button className={`text-xs px-3 flex items-center py-1 rounded-full border font-semibold ${(plan.status === 'active') ? ('bg-green-200 text-green-800 border-green-500') : (plan.status === "paused") ? ('bg-yellow-200 text-yellow-800 border-yellow-500'):('bg-red-200 text-red-800 border-red-500')}`}> 
-                                {(plan.status === 'active') ? (
+                                <button className={`text-xs px-3 flex items-center py-1 rounded-full border font-semibold ${(accountStatus === 'active') ? ('bg-green-200 text-green-800 border-green-500') : (accountStatus === "paused") ? ('bg-yellow-200 text-yellow-800 border-yellow-500'):('bg-red-200 text-red-800 border-red-500')}`}> 
+                                {(accountStatus === 'active') ? (
                                 <Circle size={8} color="green" fill="green" />
-                                ) : (plan.status === "paused") ? (
+                                ) : (accountStatus === "paused") ? (
                                 <Circle size={8} color="orange" fill="orange" />
                                 ) : (
                                 <Circle size={8} color="red" fill="red" />
                                 )}
 
-                                    <span className="ps-1">{plan.status}</span>
+                                    <span className="ps-1">{accountStatus}</span>
                                 </button>
                                 </div>
 
                                 <h2 className="text-gray-700 font-semibold text-xl">
-                                    ${plan.price}/{plan.duration == "monthly" ? 'Month' : 'Year'}
+                                    ${price}/{subscription?.duration == "monthly" ? 'Month' : 'Year'}
                                 </h2>
                             </div>
                            
@@ -154,10 +194,10 @@ const SubscriptionSettings=()=>{
                         <div className="border rounded-lg py-5 px-4 border-gray-400">
                             <div className="space-y-2">
                                 <p className="text-gray-500 text-sm">
-                                {plan.status === "active" ? ("Renewal date") : plan.status === "paused" ? ('Current cycle Ends at'): "Ended at"}
+                                {accountStatus === "active" ? ("Renewal date") : accountStatus === "paused" ? ('Current cycle Ends at'): "Ended at"}
                                 </p>
                                 <h1 className="text-gray-700 font-semibold text-xl">
-                                    {plan.renewalDate}
+                                    {endsAt}
                                 </h1>
                                 
                             </div>
@@ -167,11 +207,11 @@ const SubscriptionSettings=()=>{
 
                     <div>
                         <p className="text-gray-500 text-xs">
-                            {plan.status === "paused" ? (`Note : Account will automatically Resume from ${plan.resumeDate}`) : ("")}
+                            {accountStatus === "paused" ? (`Note : Account will automatically Resume from ${resumeDate}`) : ("")}
                         </p>        
                     </div>
 
-                    {errors.length > 0 && (
+                    {/* {errors.length > 0 && (
                         <Alert variant="destructive">
                         <AlertDescription>
                             <ul className="list-disc list-inside space-y-1">
@@ -181,16 +221,16 @@ const SubscriptionSettings=()=>{
                             </ul>
                         </AlertDescription>
                         </Alert>
-                    )}
+                    )} */}
             
-                    {success && (
+                    {/* {success && (
                         <Alert className="border-green-200 bg-green-50">
                         <AlertDescription className="text-green-800">
                             Subscription updated successfully!
                         </AlertDescription>
                         </Alert>
-                    )}
-                    {plan.status !== "paused" && <>
+                    )} */}
+                    {accountStatus !== "paused" && <>
                     <Button
                             type="button"
                             variant="outline"
@@ -198,7 +238,7 @@ const SubscriptionSettings=()=>{
                             disabled={isLoading}
                             className="bg-green-500 hover:bg-green-400 text-white border-green-500 hover:border-green-400 px-6 py-2.5 h-auto font-medium md:mr-2"
                         >
-                            Change plan
+                            Change subscription?
                         </Button>
                     
                         <Button
@@ -211,11 +251,11 @@ const SubscriptionSettings=()=>{
                         Cancel Subscription
                     </Button>
                     </>}
-                    {plan.status === "paused" &&
+                    {accountStatus === "paused" &&
                     <Button
                             type="button"
                             variant="outline"
-                            onClick={handleChangeSubscription}
+                            onClick={handleResumeSubscription}
                             disabled={isLoading}
                             className="bg-green-500 hover:bg-green-400 text-white border-green-500 hover:border-green-400 px-6 py-2.5 h-auto font-medium md:mr-2"
                     >

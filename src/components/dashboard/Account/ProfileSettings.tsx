@@ -19,7 +19,7 @@ interface UserData {
 }
 
 export default function ProfileSettings() {
-  const { user } = useUser()
+  const { user } = useUser();
   const [formData, setFormData] = useState<Omit<UserData, 'id'>>({
     first_name: "",
     last_name: "",

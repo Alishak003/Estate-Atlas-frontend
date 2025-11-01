@@ -1,70 +1,80 @@
 'use client';
 
 import { useRouter} from "next/navigation";
-import { useEffect, useState } from "react";
-import { useUser } from "../context/UserContext";
+import { useEffect } from "react";
 import Cookies from 'js-cookie';
+import { useSubscription } from "../context/SubscriptionContext";
 
 export default function CheckoutSuccess() {
   const router = useRouter();
-  const [count, setCount] = useState(5);
-  const {user,setUser} = useUser();
+  const {setSubscription} = useSubscription();
 
   useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) return;
 
-      if ( user && user.id) {
-          const refreshUserData = async () => {
-              const token = Cookies.get('token');
-
-              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+    const fetchData = async () => {
+      try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subscription/getSubscriptionContextDetails`, {
                   method: 'GET', // Or POST if you prefer
                   headers: {
                       'Authorization': `Bearer ${token}`
                   }
-              });
+            });
 
-              if (response.ok) {
-                  const refreshedData = await response.json();
-                  
-                  // 3. Update the user state and the cookie with the new data
-                  setUser(refreshedData.data);
-                  Cookies.set('user', JSON.stringify(refreshedData.user), { expires: 7, path: '/' });
-                  
-                  // OPTIONAL: Clean up the URL so the refresh doesn't happen again
-                  history.replaceState(null, '', window.location.pathname);
-                  
-              } else {
-                  console.error("Failed to refresh user data after checkout.");
-              }
-          };
+            if(!response.ok){
+              console.log("error");
+            }
 
-          refreshUserData();
-      }
-  }, [user, setUser]); // Depends on the user state and the setter
+            const data  = await response.json();
 
-  useEffect(() => {
+            if(data){
+              console.log("subs data: ",data);
+              const subscriptionData = data.data.subscription;
+              setSubscription({
+              id: subscriptionData.id ?? "",
+              price: subscriptionData.price ?? "",
+              price_id: subscriptionData.price_id ?? "",
+              duration: subscriptionData.duration ?? "monthly",
+              tier: subscriptionData.tier ?? "none",
+              current_period_end: subscriptionData.current_period_end ?? "",
+              stripe_status: subscriptionData.stripe_status ?? "",
+              discount: subscriptionData.discount
+                ? {
+                    value_off: subscriptionData.discount.discount_value ?? 0,
+                    type: subscriptionData.discount.discount_type ?? "",
+                    ends_at: subscriptionData.discount.discount_ends_at ?? "",
+                  }
+                : null,
+              is_paused: subscriptionData.is_paused
+                ? {
+                    paused_at: subscriptionData.is_paused.paused_at ?? "",
+                  }
+                : null,
+            }); 
+            }
 
-    if (count === 1) {
-      router.replace('/dashboard/Countries');
-      return;
-    }
+          } catch (error) {
+            console.log(error);
+          }finally{
+          router.replace('/dashboard/Countries');
+          }
+    };
 
-    const timer = setTimeout(() => {
-      setCount((prevCount) => prevCount - 1);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [count,router]);
+    fetchData();
+  }, [router,setSubscription]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-green-50 px-4">
-      <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full text-center">
-        <h1 className="text-3xl font-bold text-green-600 mb-4">✅ Payment Successful!</h1>
-        <p className="text-gray-700 mb-6">
-          Thank you for your payment. Your account is now active.
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-green-50 to-white px-4">
+      <div className="bg-white shadow-lg rounded-xl p-10 max-w-md w-full text-center transition-all duration-300">
+        <h1 className="text-3xl font-bold text-green-600 mb-4">
+          👋 Welcome aboard!
+        </h1>
+        <p className="text-gray-700 mb-2">
+          We&apos;re setting up your account and subscription details.
         </p>
-        <p>
-          Redirecting in {count}...
+        <p className="text-gray-500 mb-6">
+          This will only take a few seconds...
         </p>
       </div>
     </div>

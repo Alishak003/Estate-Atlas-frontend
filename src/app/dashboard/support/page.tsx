@@ -197,7 +197,7 @@ export default function Component() {
 
               <Button
                 type="submit"
-                className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3"
+                className="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3"
                 disabled={!formData.subject || !formData.priority || !formData.message || isSubmitting}
               >
                 {isSubmitting ? "Submitting..." : "Submit Request"}

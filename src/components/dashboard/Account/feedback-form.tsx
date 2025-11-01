@@ -10,9 +10,10 @@ import { useState } from "react"
 
 interface ChildComponentProps {
     handleBack: (stepValue:string)=>void;
+    handleNext: (stepValue:string)=>void;
 }
 
-export const FeedbackForm =({handleBack}:ChildComponentProps)=>{
+export const FeedbackForm =({handleNext,handleBack}:ChildComponentProps)=>{
     const token = Cookies.get('token'); 
     const [formData,setFormData] = useState ({
         reason:"",
@@ -26,7 +27,7 @@ export const FeedbackForm =({handleBack}:ChildComponentProps)=>{
         setFormData((prev)=>({...prev, [field]:value}));
     }
 
-    const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsSubmitting(true);
         try {
@@ -34,19 +35,20 @@ export const FeedbackForm =({handleBack}:ChildComponentProps)=>{
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
             },
                 body: JSON.stringify(formData),
             })
 
             const data = await res.json();
-
+            console.log("feedback api data : ",data);
             if(!res.ok){
                 setError(data.message || 'unable to submit form. Redirecting to confirmation page');
                 setTimeout(()=>setError(""),5000)
             }
             if(data.success){
-            // handleNext("CancellationConfirmation");
+                handleNext("CancellationConfirmation");
             }else{
                 console.log(data);
             }
@@ -57,6 +59,8 @@ export const FeedbackForm =({handleBack}:ChildComponentProps)=>{
             } else {
                 console.error("Unknown error:", error);
             }
+        }finally{
+            setIsSubmitting(false);
         }
     }
 
@@ -71,7 +75,7 @@ export const FeedbackForm =({handleBack}:ChildComponentProps)=>{
                          &lt; Back
                 </Button>
                 <h2 className="text-3xl mt-3 text-sky-500 mb-5 font-poppins font-semibold">FeedBack Form</h2>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleFormSubmit}>
                     {error && (
                     <p className="text-red-500 font-poppins mt-3">{error}</p>
                     )}

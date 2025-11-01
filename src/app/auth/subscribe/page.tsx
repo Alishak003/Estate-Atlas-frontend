@@ -16,6 +16,7 @@ export default function RegisterForm() {
   const { setUser } = useUser();
   const [affiliate,setAffiliate] = useState("");
 
+
   const router = useRouter();
   const PRICES_SLUG: Record<string, { monthly: string; yearly: string }> = {
     basic: {
@@ -126,6 +127,8 @@ export default function RegisterForm() {
         Cookies.set('token', data.token, { expires: 7, path: '/' });
         Cookies.set('user', JSON.stringify(data.user), { expires: 7, path: '/' });
         setUser(userData);
+
+        
         try{
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`,{
           method: 'POST',

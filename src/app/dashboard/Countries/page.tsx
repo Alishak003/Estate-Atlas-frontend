@@ -1,4 +1,5 @@
-import React from "react";
+'use client';
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +11,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, Plus } from "lucide-react";
+import { useSubscription } from "@/app/context/SubscriptionContext";
 const Countries = () => {
+  const {subscription} = useSubscription();
+  useEffect(()=>{
+    if(subscription){
+      console.log("subscription : ");
+      console.log(subscription);
+    }
+  },[subscription])
   return (
     <div>
 

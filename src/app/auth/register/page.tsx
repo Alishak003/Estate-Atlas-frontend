@@ -28,7 +28,6 @@ const Page = () => {
       <PricingSection isYearly={isYearly} />
       <FeatureComparison />
       <FAQSection/>
-     
     </div>
     <Footer/>
    </div>
