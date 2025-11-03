@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useSubscription } from "@/app/context/SubscriptionContext";
