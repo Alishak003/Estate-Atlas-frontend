@@ -27,17 +27,21 @@ const SubscriptionSettings=()=>{
 
     useEffect(()=>{
         if(subscription){
+            console.log(subscription);
             const originalPrice = Number(subscription.price);
             let discountedPrice = originalPrice;
             if (subscription?.discount) {
-            const { value_off, type } = subscription.discount;
-            if (type === "amount" && value_off) {
-                discountedPrice = Math.max(originalPrice - value_off, 0);
-            } else if (type === "percent" && value_off) {
-                discountedPrice = originalPrice - (originalPrice * value_off) / 100;
+                const { value_off, type } = subscription.discount;
+                if (type === "amount" && value_off) {
+                    discountedPrice = Math.max(originalPrice - value_off, 0);
+                } else if (type === "percentage" && value_off) {
+                    discountedPrice = originalPrice - (originalPrice * value_off) / 100;
+                }
+                console.log(discountedPrice);
+                console.log(value_off);
+                console.log(type);
             }
-            }
-
+            
 
             let resumeDate = "";
             let current_period_end = "";
@@ -64,8 +68,6 @@ const SubscriptionSettings=()=>{
             setResumeDate(resumeDate);
             setEndsAt(current_period_end);
             setPrice(discountedPrice);
-
-
         }
     },[subscription])
 
@@ -153,11 +155,11 @@ const SubscriptionSettings=()=>{
     )
     }
     return (
-        <div className="bg-gray-50 flex items-center justify-center md:p-4 ">
-          <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
+        <div className="bg-gray-50 flex items-center justify-center md:py-4 ">
+          <Card className="w-full md:max-w-5xl bg-white shadow-lg border-0 border-t-4 border-blue-400">
             <CardHeader className="text-center">
               <CardTitle className="flex gap-2 text-2xl font-semibold text-gray-700">
-                Manage Subscription
+                Billing & Subscription
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -169,7 +171,7 @@ const SubscriptionSettings=()=>{
                         <div className="border rounded-lg py-5 px-4 border-gray-400">
                             <div className="space-y-2">
                                 <div className="md:flex justify-between items-center">
-                                <p className="text-gray-500 text-sm">
+                                <p className="text-gray-500 text-sm capitalize">
                                 {subscription?.tier} {subscription?.duration} Subscription
                                 </p>
                                 <button className={`text-xs px-3 flex items-center py-1 rounded-full border font-semibold ${(accountStatus === 'active') ? ('bg-green-200 text-green-800 border-green-500') : (accountStatus === "paused") ? ('bg-yellow-200 text-yellow-800 border-yellow-500'):('bg-red-200 text-red-800 border-red-500')}`}> 
@@ -236,9 +238,9 @@ const SubscriptionSettings=()=>{
                             variant="outline"
                             onClick={handleChangeSubscription}
                             disabled={isLoading}
-                            className="bg-green-500 hover:bg-green-400 text-white border-green-500 hover:border-green-400 px-6 py-2.5 h-auto font-medium md:mr-2"
+                            className="bg-sky-500 hover:bg-sky-400 text-white border-sky-500 hover:border-sky-400 px-6 py-2.5 h-auto font-medium md:mr-2"
                         >
-                            Change subscription?
+                            Change subscription
                         </Button>
                     
                         <Button

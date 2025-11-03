@@ -158,8 +158,8 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
             }
 
             const data = await res.json();
+            console.log("discount data : ",data);
             if(data.success){ 
-              console.log('success');
               window.location.href = "/dashboard/discount-success";
               updateSubscription({
                 ...subscription,
@@ -169,9 +169,10 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
                   ends_at:""
                 }
               })
-            }
+            }else{
             console.log("data : ",data);
               window.location.href = "/dashboard/discount-failed";
+            }
 
           } catch (error) {
             console.log("eror went wrong : ",error);
@@ -226,9 +227,7 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
             }
 
             if (data.success) {
-              const url = `/dashboard/pause-success?pausedUntil=${encodeURIComponent(
-                data.paused_until
-              )}&nextBilling=${encodeURIComponent(data.next_billing_date)}`;
+              const url = `/dashboard/pause-success`;
               router.push(url);
             }
           } catch (error) {
@@ -315,7 +314,6 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
          &lt; Back
         </Button>
         <h2 className="text-xl mt-3 mb-5 font-poppins font-semibold">{offer?.remedy_title}</h2>
-   {error && <p className="text-red-500 mt-2">{error}</p>}
 
         {/* <p className="text-slate-700 font-semibold font-poppins pt-3 pb-1">{offer?.remedy_title}</p> */}
         <p className="text-slate-700 mb-6" dangerouslySetInnerHTML={{ __html: offer?.remedy_content ?? ""}}></p>

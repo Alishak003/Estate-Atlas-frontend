@@ -29,29 +29,30 @@ export default function CheckoutSuccess() {
             const data  = await response.json();
 
             if(data){
-              console.log("subs data: ",data);
               const subscriptionData = data.data.subscription;
-              setSubscription({
-              id: subscriptionData.id ?? "",
-              price: subscriptionData.price ?? "",
-              price_id: subscriptionData.price_id ?? "",
-              duration: subscriptionData.duration ?? "monthly",
-              tier: subscriptionData.tier ?? "none",
-              current_period_end: subscriptionData.current_period_end ?? "",
-              stripe_status: subscriptionData.stripe_status ?? "",
-              discount: subscriptionData.discount
-                ? {
-                    value_off: subscriptionData.discount.discount_value ?? 0,
-                    type: subscriptionData.discount.discount_type ?? "",
-                    ends_at: subscriptionData.discount.discount_ends_at ?? "",
-                  }
-                : null,
-              is_paused: subscriptionData.is_paused
-                ? {
-                    paused_at: subscriptionData.is_paused.paused_at ?? "",
-                  }
-                : null,
-            }); 
+              const subscriptionObj = {
+                id: subscriptionData.id ?? "",
+                price: subscriptionData.price ?? "",
+                price_id: subscriptionData.price_id ?? "",
+                duration: subscriptionData.duration ?? "monthly",
+                tier: subscriptionData.tier ?? "none",
+                current_period_end: subscriptionData.current_period_end ?? "",
+                stripe_status: subscriptionData.stripe_status ?? "",
+                discount: subscriptionData.discount
+                  ? {
+                      value_off: subscriptionData.discount.discount_value ?? 0,
+                      type: subscriptionData.discount.discount_type ?? "",
+                      ends_at: subscriptionData.discount.discount_ends_at ?? "",
+                    }
+                  : null,
+                is_paused: subscriptionData.is_paused
+                  ? {
+                      paused_at: subscriptionData.is_paused.paused_at ?? "",
+                    }
+                  : null,
+              };
+              setSubscription(subscriptionObj); 
+              Cookies.set('subscription', JSON.stringify(subscriptionObj), { expires: 7, path: '/' });
             }
 
           } catch (error) {

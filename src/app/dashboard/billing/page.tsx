@@ -8,6 +8,7 @@ import { Download, CreditCard } from "lucide-react";
 import Cookies from 'js-cookie';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import toast from "react-hot-toast";
+import SubscriptionSettings from "@/components/dashboard/Account/subscriptionSettings";
 
 interface Invoice {
   id: string;
@@ -45,55 +46,12 @@ export default function Billing() {
 
   // billing details state
   const [billingDetails, setBillingDetails] = useState<BillingDetails | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  useEffect(() => {
-    async function fetchBilling() {
-      try {
-        const token = Cookies.get('token');
-        if (!token) return;
-
-        // Fetch subscription details
-        const subRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/subscription`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!subRes.ok) {
-          throw new Error(`Failed to fetch billing details: ${subRes.status}`);
-        }
-
-        const subData = await subRes.json();
-        
-        setBillingDetails({
-          planName: subData.tier_name || "N/A Tier",
-          price: subData.tier_name === 'Premium (Yearly)' 
-            ? "44" 
-            : subData.tier_name === 'Premium (Monthly)' 
-              ? "49" 
-              : subData.tier_name === 'Basic (Yearly)'
-                ? "24" 
-                : subData.tier_name === 'Basic (Monthly)'
-                ? '29' : '',
-          currency: "$",
-          nextBillingDate: subData.subscription?.current_period_start
-            ? new Date(
-                subData.subscription.current_period_start
-              ).toLocaleDateString()
-            : "N/A",
-          status:
-            subData.subscription?.status === "active" ? "Active" : "Cancelled",
-          paymentMethodLast4: "4242",
-          paymentMethodExpiry: "12/27",
-        });
-
-        // Fetch payment history
+  useEffect(()=>{
+    try {
+      const token = Cookies.get('token'); 
+      const fetchHistory = async ()=>{
         const historyRes = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/stripe/payment-history`,
           {
@@ -110,31 +68,32 @@ export default function Billing() {
         }
 
         const historyData = await historyRes.json();
+        console.log(historyData);
         setBillingHistory(historyData.invoices || []);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-        setLoadingHistory(false);
       }
+      fetchHistory();
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setLoadingHistory(false);
     }
-
-    fetchBilling();
-  }, []);
+  },[])
 
   const handleDownloadInvoice = async (downloadUrl: string) => {
     try {
+      setIsDownloading(true);
       const token = Cookies.get('token');
       const response = await fetch(downloadUrl, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-        },
+        method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to download invoice');
+        console.log(response);
+        throw new Error('Failed to haye invoice');
       }
 
       // Create a blob from the response and create a download link
@@ -150,6 +109,8 @@ export default function Billing() {
     } catch (error) {
       console.error('Error downloading invoice:', error);
       toast.error('Failed to download invoice');
+    }finally{
+      setIsDownloading(false);
     }
   };
 
@@ -277,61 +238,10 @@ export default function Billing() {
     }
   };
 
-  if (!loading && !loadingHistory) {
     return (
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Billing & Subscription Section */}
-        <Card className="border-0 border-t-4 border-sky-400">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold text-gray-900">
-              Billing & Subscription
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-gray-50 rounded-lg p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                    {billingDetails?.planName}
-                  </h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-gray-900">
-                      {billingDetails?.price}
-                    </span>
-                    <span className="text-sm text-gray-600">Per month</span>
-                  </div>
-                </div>
-                <Badge className="bg-blue-500 hover:bg-blue-600 text-white">
-                  {billingDetails?.status}
-                </Badge>
-              </div>
-
-              <p className="text-sm text-gray-600 mb-6">
-                Next billing date:{" "}
-                <span className="font-medium">
-                  {billingDetails?.nextBillingDate}
-                </span>
-              </p>
-
-              <div className="flex gap-3">
-                <Button
-                  onClick={() => handleupdate()}
-                  className="bg-[#3ba1df] hover:bg-[#3ba1df] py-6 px-8 text-white cursor-pointer"
-                >
-                  Update
-                </Button>
-                <Button
-                  onClick={handleCancel}
-                  variant="outline"
-                  className="bg-gray-800 hover:bg-gray-900 py-6 px-8 text-white cursor-pointer"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
+        <SubscriptionSettings/>
+        
         {showUpdateOptions && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
@@ -430,8 +340,10 @@ export default function Billing() {
               </div>
               <h3 className="font-semibold text-gray-900">Billing History</h3>
             </div>
+            
 
-            {billingHistory.length === 0 ? (
+            {!loadingHistory &&
+            (billingHistory.length === 0 ? (
               <p className="text-gray-500 text-center py-4">No billing history found</p>
             ) : (
               <div className="overflow-x-auto">
@@ -481,12 +393,13 @@ export default function Billing() {
                         </td>
                         <td className="py-4 px-2">
                           <Button
-                            onClick={() => handleDownloadInvoice(item.download_url)}
+                            onClick={() => handleDownloadInvoice("https://upbeat-dust-99504.pktriot.net/api/stripe/invoice/in_1SONT5RzsDq04jEjPEkRpj91/download")}
                             size="sm"
+                            disabled={isDownloading}
                             className="bg-gray-800 hover:bg-gray-900 text-white"
                           >
                             <Download className="h-4 w-4 mr-1" />
-                            Download
+                            {isDownloading ? 'Downloading...':'Download'}
                           </Button>
                         </td>
                       </tr>
@@ -494,17 +407,23 @@ export default function Billing() {
                   </tbody>
                 </table>
               </div>
-            )}
+            ))}
+            {loadingHistory &&
+            <>
+              <div className="max-w-4xl mx-auto p-6 flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            </>}
           </CardContent>
         </Card>
       </div>
     );
-  }
+  
 
   // Loading state
-  return (
-    <div className="max-w-4xl mx-auto p-6 flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-    </div>
-  );
+  // return (
+  //   <div className="max-w-4xl mx-auto p-6 flex justify-center items-center h-64">
+  //     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  //   </div>
+  // );
 }

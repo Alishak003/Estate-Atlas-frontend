@@ -1,9 +1,30 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useSubscription } from "@/app/context/SubscriptionContext";
+import { useEffect, useState } from "react";
 
 
 export default function DowngradeSuccess() {
+  const {subscription} = useSubscription();
+  const [effectDate,setEffectDate] = useState("");
+  useEffect(()=>{
+    if(subscription){
+      const endsAt = subscription['current_period_end'];
+      setEffectDate(endsAt ?? "End of Current Billing Cycle");
+    }
+  },[subscription])
 
+  if(!effectDate){
+    return (
+      <div className="bg-gray-50 md:p-4 flex items-center justify-center">
+        <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
+          <CardContent className="flex items-center justify-center py-8">
+            <div className="text-gray-500">Loading user data...</div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
   return (
     <div className="bg-gray-50 md:p-4 flex justify-center">
       <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-green-500">
@@ -13,8 +34,8 @@ export default function DowngradeSuccess() {
           </h1>
 
           <p className="text-gray-700 mb-6 font-poppins">
-            Great news! Your subscription has been successfully downgraded to our<strong>Monthly Plan</strong>. 
-            This change will take effect starting from <strong>*Date*</strong>. 
+            Great news! Your subscription has been successfully downgraded to our<strong> Monthly Plan</strong>. 
+            This change will take effect starting from <strong>{effectDate}</strong>. 
             You can continue enjoying all the essential features you love, now with a simpler plan that better fits your needs.
           </p>
 
