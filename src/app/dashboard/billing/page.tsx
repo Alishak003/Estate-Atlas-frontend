@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Download, CreditCard } from "lucide-react";
 import Cookies from 'js-cookie';
@@ -18,15 +18,15 @@ interface Invoice {
   download_url: string;
 }
 
-interface BillingDetails {
-  planName: string;
-  price: string;
-  currency: string;
-  nextBillingDate: string;
-  status: "Active" | "Expired" | "Cancelled";
-  paymentMethodLast4: string;
-  paymentMethodExpiry: string;
-}
+// interface BillingDetails {
+//   planName: string;
+//   price: string;
+//   currency: string;
+//   nextBillingDate: string;
+//   status: "Active" | "Expired" | "Cancelled";
+//   paymentMethodLast4: string;
+//   paymentMethodExpiry: string;
+// }
 
 export default function Billing() {
   // Billing history state
@@ -45,7 +45,7 @@ export default function Billing() {
   const [updatingPayment, setUpdatingPayment] = useState(false);
 
   // billing details state
-  const [billingDetails, setBillingDetails] = useState<BillingDetails | null>(null);
+  // const [billingDetails, setBillingDetails] = useState<BillingDetails | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(()=>{
@@ -114,11 +114,6 @@ export default function Billing() {
     }
   };
 
-  //handle update subscription
-  const handleupdate = () => {
-    setShowUpdateOptions(true);
-  };
-
   const handleConfirmUpdate = async () => {
     const token = Cookies.get('token');
     if (!token) return toast.error("Token missing!");
@@ -153,43 +148,6 @@ export default function Billing() {
     }
   };
 
-  // cancel
-  const handleCancel = async () => {
-    const token = Cookies.get('token');
-    if (!token) return toast.error("Token missing!");
-
-    const confirm = window.confirm(
-      "Are you sure you want to cancel your subscription?"
-    );
-    if (!confirm) return;
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/subscription/cancel`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Cancel failed:", data);
-       toast.error("Cancellation failed: " + (data.message || "Unknown error"));
-      } else {
-      toast.success("✅ Subscription cancelled successfully!");
-        window.location.reload();
-        setBillingDetails(null);
-      }
-    } catch (error) {
-      console.error("Error cancelling subscription:", error);
-     toast.error("An error occurred while cancelling subscription.");
-    }
-  };
 
   // card update
   const handleUpdatePayment = async () => {
