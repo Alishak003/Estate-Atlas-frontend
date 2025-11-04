@@ -22,7 +22,7 @@ const SubscriptionSettings=()=>{
 
 
     // const [errors, setErrors] = useState<string[]>([])
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true);
     // const [success, setSuccess] = useState(false)
 
     useEffect(()=>{
@@ -68,6 +68,7 @@ const SubscriptionSettings=()=>{
             setResumeDate(resumeDate);
             setEndsAt(current_period_end);
             setPrice(discountedPrice);
+            setIsLoading(false);
         }
     },[subscription])
 
@@ -145,8 +146,8 @@ const SubscriptionSettings=()=>{
     }
     if (isLoading) {
     return (
-      <div className="bg-gray-50 md:p-4 flex items-center justify-center">
-        <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
+      <div className="bg-gray-50 md:py-4 flex items-center justify-center">
+        <Card className="w-full md:max-w-5xl bg-white shadow-lg border-0 border-t-4 border-blue-400">
           <CardContent className="flex items-center justify-center py-8">
             <div className="text-gray-500">Loading Subscription data...</div>
           </CardContent>

@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Download, CreditCard } from "lucide-react";
+import { Download, CreditCard, ArrowRight } from "lucide-react";
 import Cookies from 'js-cookie';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import toast from "react-hot-toast";
 import SubscriptionSettings from "@/components/dashboard/Account/subscriptionSettings";
+import { useRouter } from "next/navigation";
 
 interface Invoice {
   id: string;
@@ -18,17 +19,8 @@ interface Invoice {
   download_url: string;
 }
 
-// interface BillingDetails {
-//   planName: string;
-//   price: string;
-//   currency: string;
-//   nextBillingDate: string;
-//   status: "Active" | "Expired" | "Cancelled";
-//   paymentMethodLast4: string;
-//   paymentMethodExpiry: string;
-// }
-
 export default function Billing() {
+  const router = useRouter();
   // Billing history state
   const [billingHistory, setBillingHistory] = useState<Invoice[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
@@ -45,7 +37,6 @@ export default function Billing() {
   const [updatingPayment, setUpdatingPayment] = useState(false);
 
   // billing details state
-  // const [billingDetails, setBillingDetails] = useState<BillingDetails | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(()=>{
@@ -53,7 +44,7 @@ export default function Billing() {
       const token = Cookies.get('token'); 
       const fetchHistory = async ()=>{
         const historyRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/stripe/payment-history`,
+          `${process.env.NEXT_PUBLIC_API_URL}/stripe/payment-history?per_page=1`,
           {
             method: "GET",
             headers: {
@@ -114,6 +105,7 @@ export default function Billing() {
     }
   };
 
+  
   const handleConfirmUpdate = async () => {
     const token = Cookies.get('token');
     if (!token) return toast.error("Token missing!");
@@ -364,6 +356,17 @@ export default function Billing() {
                     ))}
                   </tbody>
                 </table>
+                <div className="flex justify-center mt-4">
+                  <Button
+                    variant="ghost"
+                    onClick={() => router.push('/dashboard/BillingHistory')}
+                    className="text-sky-600 hover:text-sky-700 font-medium text-sm flex items-center gap-1 p-0 h-auto"
+                  >
+                    Show all transactions
+                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  </Button>
+                </div>
+
               </div>
             ))}
             {loadingHistory &&
