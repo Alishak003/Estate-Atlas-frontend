@@ -32,7 +32,6 @@ const CancellationConfirmation = ({handleBack}:ChildComponentProps)=>{
   const handleSubmit = async()=> {
     setIsLoading(true);
       try {
-          const planName = subscription ? `${subscription.tier} ${subscription?.duration}` : null;
 
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subscription/cancel`, {
               method: 'POST',
