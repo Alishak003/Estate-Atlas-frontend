@@ -4,9 +4,10 @@ import { PricingCard } from './PricingCard';
 
 interface PricingSectionProps {
   isYearly: boolean;
+  code: string;
 }
 
-export const PricingSection = ({ isYearly }: PricingSectionProps) => {
+export const PricingSection = ({ isYearly,code }: PricingSectionProps) => {
   const professionalFeatures = [
     'Global Market Analysis',
     'Rental Yield Data',
@@ -30,6 +31,7 @@ export const PricingSection = ({ isYearly }: PricingSectionProps) => {
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <PricingCard
+            referral={code}
             title="Professional"
             subtitle="Individual investors, analysts, and digital nomads"
             monthlyPrice={29}
@@ -41,6 +43,7 @@ export const PricingSection = ({ isYearly }: PricingSectionProps) => {
             plan={'basic'}
           />
           <PricingCard
+            referral={code}
             title="Enterprise"
             subtitle="Institutional buyers, private equity firms, and real estate agencies"
             monthlyPrice={49}

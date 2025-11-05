@@ -16,6 +16,7 @@ interface PricingCardProps {
   ctaText: string;
   isPopular: boolean;
   plan: 'basic' | 'premium';
+  referral: string;
 }
 
 export const PricingCard = ({
@@ -27,7 +28,8 @@ export const PricingCard = ({
   features,
   ctaText,
   isPopular,
-  plan
+  plan,
+  referral
 }: PricingCardProps) => {
   const currentPrice = isYearly ? yearlyPrice : monthlyPrice;
   const billedAmount = isYearly ? yearlyPrice * 12 : monthlyPrice;
@@ -35,8 +37,8 @@ export const PricingCard = ({
  const router = useRouter();
 const handleClick = () => {
   // const referral = localStorage.getItem("affiliate_code");
-  const url = `subscribe?plan=${plan}&isYearly=${isYearly}`;
-  // if (referral) url += `&ref=${referral}`;
+  let url = `subscribe?plan=${plan}&isYearly=${isYearly}`;
+  if (referral) url += `&ref=${referral}`;
   router.push(url);
   };
 

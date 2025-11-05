@@ -3,16 +3,18 @@
 import { useSubscription } from "@/app/context/SubscriptionContext";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import Cookies from 'js-cookie';
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ChildComponentProps {
     handleBack: (stepValue:string)=>void;
-    handleSubmit: ()=>void;
 }
-const CancellationConfirmation = ({handleBack, handleSubmit}:ChildComponentProps)=>{
+const CancellationConfirmation = ({handleBack}:ChildComponentProps)=>{
+  const token = Cookies.get('token');
   const router = useRouter();
   const {subscription} = useSubscription();
+  const[isLoading,setIsLoading] =useState(false);
   const [currentEndDate,setCurrentEndDate] = useState("");
 
   useEffect (()=>{
@@ -26,6 +28,33 @@ const CancellationConfirmation = ({handleBack, handleSubmit}:ChildComponentProps
       setCurrentEndDate(localedateformat);
     }
   },[subscription])
+
+  const handleSubmit = async()=> {
+    setIsLoading(true);
+      try {
+          const planName = subscription ? `${subscription.tier} ${subscription?.duration}` : null;
+
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subscription/cancel`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${token}`}
+            });
+
+            if(!res.ok){
+              console.log("error in res")
+            }
+
+            const data = await res.json();
+
+            if(data.success){
+              console.log("cancel data : ",data);
+              router.push('/dashboard/Cancellation-success');
+            }
+      } catch (error) {
+          console.log("somethins wronf i swear : ",error);
+      }finally{
+        setIsLoading(false);
+      }
+  }
     return (
         <div className="bg-gray-50 md:p-4 flex items-center justify-center">
     <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
@@ -53,7 +82,8 @@ const CancellationConfirmation = ({handleBack, handleSubmit}:ChildComponentProps
               Never Mind, Keep My Subscription
             </Button>
             <Button
-            onClick={()=>handleSubmit}
+            onClick={handleSubmit}
+            disabled={isLoading}
               type="submit"
               className="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 h-auto font-medium"
             >

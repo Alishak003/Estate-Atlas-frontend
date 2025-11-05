@@ -101,8 +101,8 @@ const Pricing = () => {
               </div>
 
               <button onClick={() => handleClick("basic")} className="bg-[#0A1532] cursor-pointer text-white w-full py-3 rounded-lg text-center font-medium transition hover:bg-[#0d1d45]">
-  Get Started
-</button>
+                Get Started
+              </button>
 
 
               <ul className="text-left space-y-3 mt-6 text-gray-700">
@@ -165,8 +165,8 @@ const Pricing = () => {
               </div>
 
               <button onClick={() => handleClick("premium")} className="bg-white cursor-pointer text-[#0A1532] w-full py-3 rounded-lg text-center font-medium transition">
-  Get Started
-</button>
+                Get Started
+              </button>
 
 
               <ul className="text-left space-y-3 mt-6 text-white">

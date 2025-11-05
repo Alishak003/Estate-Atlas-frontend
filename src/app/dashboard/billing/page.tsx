@@ -343,7 +343,7 @@ export default function Billing() {
                         </td>
                         <td className="py-4 px-2">
                           <Button
-                            onClick={() => handleDownloadInvoice("https://upbeat-dust-99504.pktriot.net/api/stripe/invoice/in_1SONT5RzsDq04jEjPEkRpj91/download")}
+                            onClick={() => handleDownloadInvoice(item.download_url)}
                             size="sm"
                             disabled={isDownloading}
                             className="bg-gray-800 hover:bg-gray-900 text-white"

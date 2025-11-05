@@ -10,13 +10,14 @@ import React, { useEffect, useState } from 'react';
 
 const Page = () => {
   const [isYearly, setIsYearly] = useState(false);
+  const [referral, setReferral] = useState("");
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const referral = params.get('code');
+    const referralCode = params.get('code');
 
     console.log('referral', referral);
-    if (referral) {
-      localStorage.setItem('affiliate_code', referral);
+    if (referralCode) {
+      setReferral(referralCode);
     }
   }, []);
 
@@ -25,7 +26,7 @@ const Page = () => {
     <Navbar/>
      <div className="min-h-screen bg-white font-poppins">
       <HeroSection isYearly={isYearly} onBillingChange={setIsYearly} />
-      <PricingSection isYearly={isYearly} />
+      <PricingSection isYearly={isYearly} code = {referral}/>
       <FeatureComparison />
       <FAQSection/>
     </div>

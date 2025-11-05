@@ -31,14 +31,11 @@ export default function RegisterForm() {
 
   // Get URL params on client side
   useEffect(() => {
-    const referral = localStorage.getItem('affiliate_code');
-    if(referral){
-    setAffiliate(referral);
-    }
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setPlan(params.get('plan') || 'premium');
       setIsYearly(params.get('isYearly') === 'true');
+      setAffiliate(params.get('ref') || "");
     }
   }, []);
 

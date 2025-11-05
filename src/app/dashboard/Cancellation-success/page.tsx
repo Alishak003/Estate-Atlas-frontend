@@ -1,8 +1,21 @@
+'use client';
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useSubscription } from "@/app/context/SubscriptionContext";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DiscountSuccess() {
+  const router = useRouter();
+  const {subscription} = useSubscription();
+  const [endDate,setEndDate] = useState("");
 
+  useEffect(()=>{
+    if(subscription){
+      setEndDate(subscription['current_period_end']);
+    }
+  },[subscription])
   return (
     <div className="bg-gray-50 md:p-4 flex justify-center">
       <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
@@ -17,12 +30,13 @@ export default function DiscountSuccess() {
           </p>
 
           <p className="text-gray-500 font-poppins">
-            You can still access your benefits until the end of your current billing period.  
+            You can still access your benefits until the end of your current billing period {endDate? `ie. ${endDate}` : ""}.  
             We hope to welcome you back in the future.
           </p>
         </CardContent>
         <CardFooter className="py-5 px-6 md:px-12">
           <Button
+          onClick={()=>router.push('/dashboard/Countries')}
           variant="outline"
            className="bg-sky-500 text-white py-5 px-6 border-sky-500 hover:bg-sky-600"
           >

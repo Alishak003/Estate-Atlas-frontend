@@ -35,14 +35,6 @@ const CancellationForm = ()=>{
         window.history.pushState(null, '', `?step=${encodedStep}&reason=${encodedReason}&other=${encodedOther}`);
         setActiveStep(stepValue);
     };
-
-    const handleSubmit = ()=> {
-        try {
-            
-        } catch (error) {
-            console.log(error);
-        }
-    }
     useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlStep = params.get('step') ?? "default";
@@ -82,7 +74,7 @@ const CancellationForm = ()=>{
         <>
             {activeStep === "default" && <CancellationReasonModal selectedReason={selectedReason} setSelectedReason={setSelectedReason} handleBack={handleBack} handleNext={handleNext}/>}
             {activeStep === "CancellationOffer" && <CancellationOffer setOtherReason={setOtherReason} selectedReason={selectedReason} otherReason={otherReason} handleBack={handleBack} handleNext={handleNext} />}
-            {activeStep === "CancellationConfirmation" && <CancellationConfirmation handleSubmit = {handleSubmit} handleBack = {handleBack}/>}
+            {activeStep === "CancellationConfirmation" && <CancellationConfirmation handleBack = {handleBack}/>}
             {activeStep === "CompetitionFeedback" && <FeedbackForm handleBack={handleBack} handleNext={handleNext}/>}
             {activeStep === "TutorialVideo" && <TutorialVideo url="https://www.youtube.com/embed/watch?v=1OAjeECW90E&list=RD1OAjeECW90E&start_radio=1" handleNext={handleNext} handleBack={handleBack}/>}
         </>
