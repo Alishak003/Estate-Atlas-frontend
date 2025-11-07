@@ -74,7 +74,7 @@ const SubscriptionSettings=()=>{
 
 
     const handleChangeSubscription= ()=>{
-        router.push('/auth/register');
+        router.push('/dashboard/changeSubscription');
     }
 
     const handleResumeSubscription = async () => {

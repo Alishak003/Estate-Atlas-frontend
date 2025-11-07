@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Mail, HelpCircle, Heart, Plus, Minus } from "lucide-react"
+import { Mail, HelpCircle, Plus, Minus } from "lucide-react"
 import Cookies from 'js-cookie';
 import toast from "react-hot-toast"
 
@@ -234,7 +234,7 @@ export default function Component() {
         </Card>
 
         {/* Need More Help Section */}
-        <Card className="border-t-4 border-t-blue-400">
+        {/* <Card className="border-t-4 border-t-blue-400">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-700">
               <Heart className="w-5 h-5" />
@@ -250,7 +250,7 @@ export default function Component() {
               <Button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2">Live Chat</Button>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   )

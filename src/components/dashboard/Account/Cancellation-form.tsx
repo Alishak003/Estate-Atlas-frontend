@@ -48,7 +48,7 @@ export default function CancellationReasonModal({ handleNext,handleBack, selecte
   <div className="bg-gray-50 md:p-4 flex items-center justify-center">
     <Card className="w-full md:max-w-5xl md:px-10 bg-white shadow-lg border-0 border-t-4 border-blue-400">
       <CardContent className="py-10 px-6 md:px-10">
-        <Button onClick={()=>handleBack("accountSettings")}
+        <Button onClick={()=>handleBack("billing")}
         className="px-0 shadow-none text-sky-500 py-2 bg-transparent hover:bg-transparent hover:text-sky-600"
         >
          &lt; Back

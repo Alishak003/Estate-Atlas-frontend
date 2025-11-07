@@ -11,7 +11,12 @@ export default function DowngradeSuccess() {
   const [effectDate,setEffectDate] = useState("");
   useEffect(()=>{
     if(subscription){
-      const endsAt = subscription['current_period_end'];
+      const isodate = new Date(subscription.current_period_end);
+      const endsAt = isodate.toLocaleDateString('en-US', {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+      });
       setEffectDate(endsAt ?? "End of Current Billing Cycle");
     }
   },[subscription])
@@ -42,7 +47,7 @@ export default function DowngradeSuccess() {
           </p>
 
           <p className="text-gray-700 mb-6 font-poppins">
-            We understand that sometimes plans need to change, and we&apos;re happy to make it easy for you. Even on the Monthly Plan, you&apos;ll still have access to key tools and resources to help you stay productive and get the most out of your subscription.
+            We understand that sometimes plans need to change,  and we&apos;re happy to accommodate your new plans. Even on the Monthly Plan, you&apos;ll still have access to key tools and resources to help you stay productive and get the most out of your subscription.
           </p>
 
           <p className="text-gray-700 mb-6 font-poppins">

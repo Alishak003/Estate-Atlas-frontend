@@ -1,5 +1,4 @@
 "use client";
-import React from 'react';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -11,12 +10,14 @@ interface PricingCardProps {
   subtitle: string;
   monthlyPrice: number;
   yearlyPrice: number;
-  isYearly: boolean;
+  isYearly: string | boolean;
   features: string[];
   ctaText: string;
   isPopular: boolean;
   plan: 'basic' | 'premium';
   referral: string;
+  flag_plan: string;
+  flag_isYearly:string | boolean;
 }
 
 export const PricingCard = ({
@@ -29,18 +30,28 @@ export const PricingCard = ({
   ctaText,
   isPopular,
   plan,
-  referral
+  referral,
+  flag_isYearly,
+  flag_plan,
 }: PricingCardProps) => {
   const currentPrice = isYearly ? yearlyPrice : monthlyPrice;
   const billedAmount = isYearly ? yearlyPrice * 12 : monthlyPrice;
-
+  
  const router = useRouter();
-const handleClick = () => {
+ const handleClick = () => {
   // const referral = localStorage.getItem("affiliate_code");
-  let url = `subscribe?plan=${plan}&isYearly=${isYearly}`;
+  const isLoggedIn = !!flag_plan; // if flag_plan exists, user has a subscription
+  const basePath = isLoggedIn ? "/subscription/update" : "/subscribe";
+  
+  let url = `${basePath}?plan=${plan}&isYearly=${isYearly}`;
+  
   if (referral) url += `&ref=${referral}`;
+  
   router.push(url);
   };
+
+  const isCurrentPlan = flag_plan === plan && flag_isYearly === isYearly;
+
 
   return (
     <div className={`relative bg-white rounded-2xl border-2 p-8 transition-all duration-300 hover:shadow-xl ${
@@ -55,7 +66,7 @@ const handleClick = () => {
       )}
       
       <div className="text-center mb-8">
-        <h3 className="font-poppins font-bold text-2xl text-slate-900 mb-2">{title}</h3>
+        <h3 className="font-poppins font-bold text-2xl text-slate-900 mb-2"> {isCurrentPlan ? "Current Plan" : title}</h3>
         <p className="font-poppins text-slate-600 text-sm mb-6">{subtitle}</p>
         
         <div className="mb-4">
@@ -80,6 +91,7 @@ const handleClick = () => {
       </ul>
 
       <Button 
+      disabled = {isCurrentPlan}
       onClick={handleClick}
         className={`w-full font-poppins font-medium py-3 rounded-lg transition-all duration-200 ${
           isPopular 

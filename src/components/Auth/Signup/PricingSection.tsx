@@ -41,6 +41,8 @@ export const PricingSection = ({ isYearly,code }: PricingSectionProps) => {
             ctaText="Choose Professional"
             isPopular={true}
             plan={'basic'}
+            flag_isYearly={''}
+            flag_plan={''}
           />
           <PricingCard
             referral={code}
@@ -53,6 +55,8 @@ export const PricingSection = ({ isYearly,code }: PricingSectionProps) => {
             ctaText="Choose Enterprise"
             isPopular={false}
             plan={'premium'}
+            flag_isYearly={''}
+            flag_plan={''}
           />
         </div>
       </div>

@@ -5,7 +5,6 @@ import CancellationReasonModal from "@/components/dashboard/Account/Cancellation
 import CancellationOffer from "@/components/dashboard/Account/cancellation-offer";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TutorialVideo } from "@/components/dashboard/Account/TutorialVideo";
 import { FeedbackForm } from "@/components/dashboard/Account/feedback-form";
 
 const CancellationForm = ()=>{
@@ -42,8 +41,8 @@ const CancellationForm = ()=>{
     const urlOther = params.get('other') ?? "";
     
     if (urlStep) {
-        if(urlStep === "accountSettings"){
-            router.push('/dashboard/accountSettings');
+        if(urlStep === "billing"){
+            router.push('/dashboard/billing');
         }
         switch (urlStep) {
             case "CancellationOffer":
@@ -55,9 +54,6 @@ const CancellationForm = ()=>{
                 break;
             case "CompetitionFeedback":
                 setActiveStep("CompetitionFeedback");
-                break;
-            case "TutorialVideo":
-                setActiveStep("TutorialVideo");
                 break;
             default:
                 setActiveStep("default");
@@ -76,7 +72,6 @@ const CancellationForm = ()=>{
             {activeStep === "CancellationOffer" && <CancellationOffer setOtherReason={setOtherReason} selectedReason={selectedReason} otherReason={otherReason} handleBack={handleBack} handleNext={handleNext} />}
             {activeStep === "CancellationConfirmation" && <CancellationConfirmation handleBack = {handleBack}/>}
             {activeStep === "CompetitionFeedback" && <FeedbackForm handleBack={handleBack} handleNext={handleNext}/>}
-            {activeStep === "TutorialVideo" && <TutorialVideo url="https://www.youtube.com/embed/watch?v=1OAjeECW90E&list=RD1OAjeECW90E&start_radio=1" handleNext={handleNext} handleBack={handleBack}/>}
         </>
     )
 }

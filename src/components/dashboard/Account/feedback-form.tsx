@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import Cookies from 'js-cookie';
+import { useRouter } from "next/navigation";
 
 
 import { useState } from "react"
@@ -14,11 +15,13 @@ interface ChildComponentProps {
 }
 
 export const FeedbackForm =({handleNext,handleBack}:ChildComponentProps)=>{
+    const router = useRouter();
     const token = Cookies.get('token'); 
     const [formData,setFormData] = useState ({
         reason:"",
         desired_features:"",
-        other_feedback:""
+        other_feedback:"",
+        competitor_name: ""
     })
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error,setError] = useState("");
@@ -75,10 +78,20 @@ export const FeedbackForm =({handleNext,handleBack}:ChildComponentProps)=>{
                          &lt; Back
                 </Button>
                 <h2 className="text-3xl mt-3 text-sky-500 mb-5 font-poppins font-semibold">FeedBack Form</h2>
+                <h3>Help Us Improve!</h3>
+                <p>We’re sorry to hear that, To help us improve, can you please fill in this short feedback form before cancelling. 
+                    We may be adding this feature shortly to our platform.
+                    Your Estate Atlas subscription and all saved data will be deleted at the end of your billing cycle on (date) .
+                     You will not be charged again.</p>
+
                 <form onSubmit={handleFormSubmit}>
                     {error && (
                     <p className="text-red-500 font-poppins mt-3">{error}</p>
                     )}
+                    <label className="font-poppins text-slate-500">
+                        what is the competitors website?
+                    </label>
+                    <Textarea value={formData.competitor_name} onChange={(e)=>handleChange('competitor_name',e.target.value)} className="w-full" />
 
                     <label className="font-poppins text-slate-500">
                         Why did you choose a competitor?
@@ -120,6 +133,15 @@ export const FeedbackForm =({handleNext,handleBack}:ChildComponentProps)=>{
                         disabled={!formData.reason || !formData.desired_features || isSubmitting}
                         >
                         {isSubmitting ? "Submitting..." : "Submit Feedback"}
+                    </Button>
+                    <Button
+                        onClick={()=>router.push('/dashboard/Countries')}
+                        type="button"
+                        variant="outline"
+                        className="bg-sky-500 hover:bg-sky-600 text-white border-sky-500 hover:border-sky-600 px-6 py-2.5 h-auto font-medium"
+                        disabled={isSubmitting}
+                        >
+                        Keep Subscription
                     </Button>
                     </div>
                 </form>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 import { useRouter } from "next/navigation";
 import { useSubscription } from "@/app/context/SubscriptionContext";
+import { TutorialVideo } from "./TutorialVideo";
 
 // components/CancellationOffer.js (Example)
 interface ChildComponentProps {
@@ -64,7 +65,7 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
     {
       "reason": "I found a competitor I like better.",
       "remedy_title": "Help Us Improve!",
-      "remedy_content": "We're sorry to hear that. To help us improve, could you tell us what the competitor offers that we don't? <strong>[Link to a short 3-question feedback survey]</strong> We may have a feature coming soon that meets your needs.",
+      "remedy_content": "We're sorry to hear that. To help us improve, could you tell us what the competitor offers that we don't? We may have a feature coming soon that meets your needs.",
       "action_button_text": "Submit FeedBack & Continue",
       "action_link_type": "survey" 
     },
@@ -98,9 +99,9 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
     },
     {
       "reason": "The platform is too difficult to use.",
-      "remedy_title": "Let Us Walk You Through It — 1-on-1 Help Available",
-      "remedy_content": "We’re really sorry to hear that you’ve had a hard time getting comfortable with the platform. You’re not alone — many professionals find that a quick <strong>1-on-1 walkthrough</strong> makes all the difference.<br/><br/>We’d love to personally show you how to get the most out of your subscription. <br/><br/><ul class='mt-3 ml-5 list-disc'><li><strong>Access quick tutorials.</strong> Learn step-by-step at your own pace with short videos and guides.</li></ul>",
-      "action_button_text": "Watch our Demo Tutorial",
+      "remedy_title": "We are here to help, please refer to our demo video.",
+      "remedy_content": "We’re really sorry to hear that you’ve had a hard time getting comfortable with with the platform.We’d love to show you how to ger the most out of your subscription:<br>Please refer to the below short video tutorial explaining how to use the platform.",
+      "action_button_text": "Return to Dashboard",
       "action_link_type": "support"
     }
 
@@ -109,9 +110,10 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
   
 
   useEffect(()=>{
-    console.log("entered effect");
-    if(selectedReason === 'It is too expensive.'){
-      console.log("reason found");
+    if(selectedReason === 'I found a competitor I like better.'){
+      handleNext("CompetitionFeedback");
+    }
+    else if(selectedReason === 'It is too expensive.'){
       if(subscription){
       console.log("subscription found : ",subscription);
         setDuration(subscription.duration);
@@ -285,7 +287,7 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
           break;
 
         case "support":
-          handleNext("TutorialVideo");
+          router.push('/dashboard/Countries');
           break;
           
         default:
@@ -327,6 +329,7 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
                       rows={4}
                     />
         }
+        {offer.reason === "The platform is too difficult to use." && <TutorialVideo url="https://www.youtube.com/embed/watch?v=1OAjeECW90E&list=RD1OAjeECW90E&start_radio=1" handleNext={handleNext} handleBack={handleBack}/>}
           {!isSingleButtonFlow &&
 
         <div className="flex-col md:flex-row gap-4 w-full md:w-auto pt-5">
@@ -351,8 +354,20 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
         </div>
             }
           {isSingleButtonFlow && 
+          <>
           <Button
               onClick={handleAcceptOffer}
+              disabled={isCancelling || (offer?.action_link_type === "other_feedback" && !otherReason)}
+              className={`mt-3 px-6 py-2.5 h-auto font-medium rounded-md
+              ${isCancelling
+                ? 'bg-gray-500 text-white cursor-not-allowed border-gray-500'
+                : 'bg-gray-500 hover:bg-gray-600 text-white border-gray-500 hover:border-gray-600'
+              }`}
+            >
+              {isCancelling ? 'Submitting...' : offer?.action_button_text}
+            </Button>
+            <Button
+              onClick={()=>router.push("/dashboard/Countries")}
               disabled={isCancelling || (offer?.action_link_type === "other_feedback" && !otherReason)}
               className={`mt-3 px-6 py-2.5 h-auto font-medium rounded-md
               ${isCancelling
@@ -360,8 +375,11 @@ const CancellationOffer = ({ handleBack, selectedReason, handleNext, otherReason
                 : 'bg-sky-500 hover:bg-sky-600 text-white border-sky-500 hover:border-sky-600'
               }`}
             >
-              {isCancelling ? 'Submitting...' : offer?.action_button_text}
+             Keep my Subscription
             </Button>
+          </>
+          
+
           }
 
       </CardContent>

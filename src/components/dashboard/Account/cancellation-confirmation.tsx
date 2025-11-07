@@ -74,7 +74,7 @@ const CancellationConfirmation = ({handleBack}:ChildComponentProps)=>{
 
           <div className="flex flex-col md:flex-row mt-4 gap-4 pt-4">
             <Button
-              onClick={()=>router.push('/dashboard/accountSettings')}
+              onClick={()=>router.push('/dashboard/billing')}
               variant="outline"
               className="bg-sky-500 hover:bg-sky-600 text-white border-sky-500 hover:border-sky-600 px-6 py-2.5 h-auto font-medium"
             >
