@@ -41,7 +41,7 @@ export const PricingCard = ({
  const handleClick = () => {
   // const referral = localStorage.getItem("affiliate_code");
   const isLoggedIn = !!flag_plan; // if flag_plan exists, user has a subscription
-  const basePath = isLoggedIn ? "/subscription/update" : "/subscribe";
+  const basePath = isLoggedIn ? "/subscription/update" : "/auth/subscribe";
   
   let url = `${basePath}?plan=${plan}&isYearly=${isYearly}`;
   
